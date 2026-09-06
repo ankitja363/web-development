@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiwa · Beauty Cosmetics Clothing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #faf6f1; color: #2d1b0e; }
+        .app { max-width: 1440px; margin: 0 auto; padding: 0 1.8rem; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 2rem; background: linear-gradient(135deg, #ffffff 0%, #fcf8f5 100%); border-radius: 0 0 30px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); flex-wrap: wrap; gap: 0.8rem; border-bottom: 3px solid #e8d5c8; }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; text-decoration: none; padding: 0.2rem 0; }
+        .logo-main { font-size: 2.8rem; font-weight: 800; color: #2d1b0e; letter-spacing: 10px; line-height: 1; font-family: 'Georgia', serif; }
+        .logo-main .kiwa-highlight { color: #c0392b; background: none; padding: 0; font-style: italic; }
+        .logo-tagline { font-size: 0.65rem; font-weight: 400; color: #8b6b5a; letter-spacing: 8px; text-transform: uppercase; margin-top: 0.1rem; font-family: 'Georgia', serif; }
+        .logo-tagline span { color: #c0392b; font-weight: 600; }
+        .logo-tagline .dot { color: #c0392b; font-weight: 700; margin: 0 0.3rem; }
+        .nav-links { display: flex; gap: 2.5rem; font-weight: 500; color: #4a3228; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: inherit; cursor: pointer; transition: 0.3s; padding: 0.3rem 0; font-size: 0.95rem; letter-spacing: 0.5px; }
+        .nav-links a:hover { color: #c0392b; }
+        .nav-links .active { color: #c0392b; border-bottom: 2px solid #c0392b; padding-bottom: 0.2rem; }
+        .nav-icons { display: flex; gap: 1.8rem; font-size: 1.2rem; color: #4a3228; align-items: center; }
+        .nav-icons i { cursor: pointer; transition: 0.3s; }
+        .nav-icons i:hover { color: #c0392b; transform: scale(1.1); }
+        .panel { display: block; }
+        .panel-hidden { display: none !important; }
+        .admin-wrapper { display: flex; flex-wrap: wrap; gap: 2rem; margin: 1.8rem 0 2.5rem 0; }
+        .admin-sidebar { flex: 0 0 220px; background: white; border-radius: 32px; padding: 1.8rem 1.2rem; border: 1px solid #f0e8e0; height: fit-content; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .admin-sidebar h3 { font-weight: 600; margin-bottom: 1.5rem; font-size: 1.1rem; color: #2d1b0e; }
+        .admin-sidebar ul { list-style: none; }
+        .admin-sidebar li { padding: 0.7rem 0.8rem; margin: 0.2rem 0; border-radius: 40px; font-weight: 500; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 0.7rem; color: #4a3228; }
+        .admin-sidebar li i { width: 1.4rem; color: #6b4f3e; }
+        .admin-sidebar li.active-admin { background: #f5ece4; color: #2d1b0e; }
+        .admin-sidebar li.active-admin i { color: #c0392b; }
+        .admin-sidebar li:hover:not(.active-admin) { background: #faf6f1; }
+        .admin-content { flex: 1; min-width: 280px; background: white; border-radius: 32px; padding: 2rem; border: 1px solid #f0e8e0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+        .stat-card { background: #faf6f1; padding: 1rem 1.5rem; border-radius: 24px; border: 1px solid #f0e8e0; }
+        .stat-card span { font-size: 0.8rem; color: #6b4f3e; font-weight: 500; }
+        .stat-card .number { font-size: 1.8rem; font-weight: 700; color: #2d1b0e; }
+        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0 2rem 0; }
+        .chart-box { background: #faf6f1; border-radius: 24px; padding: 1.2rem; border: 1px solid #f0e8e0; }
+        .chart-box h4 { font-weight: 600; margin-bottom: 0.8rem; font-size: 0.95rem; color: #2d1b0e; }
+        .chart-box canvas { max-height: 160px; max-width: 100%; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .admin-table th { text-align: left; padding: 0.8rem 0.2rem; border-bottom: 2px solid #f0e8e0; font-weight: 600; color: #2d1b0e; }
+        .admin-table td { padding: 0.8rem 0.2rem; border-bottom: 1px solid #f5ece4; vertical-align: middle; }
+        .btn-sm { background: #f0e8e0; border: none; padding: 0.5rem 1.5rem; border-radius: 40px; font-weight: 500; cursor: pointer; transition: 0.3s; font-size: 0.85rem; display: inline-block; color: #2d1b0e; }
+        .btn-sm:hover { background: #e0d5cc; transform: translateY(-1px); }
+        .btn-sm.primary { background: #2d1b0e; color: white; }
+        .btn-sm.primary:hover { background: #c0392b; }
+        .btn-sm.green { background: #c0392b; color: white; }
+        .btn-sm.green:hover { background: #a93226; }
+        .btn-sm.outline { background: transparent; border: 2px solid #2d1b0e; color: #2d1b0e; }
+        .btn-sm.outline:hover { background: #2d1b0e; color: white; }
+        .btn-sm.success { background: #28a745; color: white; }
+        .btn-sm.success:hover { background: #218838; }
+        .btn-sm.info { background: #17a2b8; color: white; }
+        .btn-sm.info:hover { background: #138496; }
+        .btn-sm.danger { background: #dc3545; color: white; }
+        .btn-sm.danger:hover { background: #c82333; }
+        .badge { background: #f0e8e0; padding: 0.2rem 0.8rem; border-radius: 40px; font-size: 0.65rem; font-weight: 600; display: inline-block; margin: 0.1rem; }
+        .badge.success { background: #d4edda; color: #155724; }
+        .badge.warning { background: #fff3cd; color: #856404; }
+        .badge.danger { background: #fcd9d9; color: #a12121; }
+        .badge.info { background: #d1ecf1; color: #0c5460; }
+        .badge.primary { background: #cce5ff; color: #004085; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: 32px; padding: 2.5rem; max-width: 750px; width: 92%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal-content h3 { margin-bottom: 1rem; color: #2d1b0e; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #2d1b0e; color: white; padding: 1rem 2rem; border-radius: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 999; opacity: 0; transition: opacity 0.4s; pointer-events: none; font-weight: 500; }
+        .toast.show { opacity: 1; pointer-events: auto; }
+        .input-group { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+        .input-group label { min-width: 120px; font-weight: 500; }
+        .input-group input, .input-group select, .input-group textarea { flex: 1; padding: 0.5rem 1rem; border-radius: 40px; border: 1px solid #e8ddd5; background: white; font-size: 0.9rem; }
+        .input-group textarea { border-radius: 16px; min-width: 200px; }
+        .admin-actions { display: flex; gap: 0.6rem; margin: 1.5rem 0 1rem 0; flex-wrap: wrap; }
+        .delivery-app-card { background: #faf6f1; border-radius: 16px; padding: 1rem; border: 1px solid #f0e8e0; margin: 0.5rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .delivery-log-item { background: #faf6f1; border-radius: 12px; padding: 0.8rem 1rem; margin: 0.4rem 0; border-left: 4px solid #c0392b; }
+        .delivery-log-container { max-height: 200px; overflow-y: auto; }
+        .hero-slider { background: linear-gradient(135deg, #f5ece4 0%, #e8ddd5 50%, #f5ece4 100%); border-radius: 40px; padding: 3rem 3rem; margin: 1.5rem 0 2.5rem 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem; border: 1px solid rgba(192,57,43,0.08); position: relative; overflow: hidden; }
+        .hero-slider .text { flex: 1; position: relative; z-index: 1; }
+        .hero-slider .text h1 { font-size: 3.2rem; font-weight: 700; color: #2d1b0e; line-height: 1.1; }
+        .hero-slider .text h1 .highlight { color: #c0392b; }
+        .hero-slider .text p { font-size: 1.15rem; color: #6b4f3e; margin: 0.8rem 0 1.5rem 0; max-width: 450px; }
+        .hero-slider .image { font-size: 6rem; color: #c0392b; opacity: 0.2; position: relative; z-index: 1; }
+        .product-grid-customer { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.8rem; margin: 1.5rem 0; }
+        .product-card-customer { background: white; border-radius: 28px; padding: 1.2rem; border: 1px solid #f0e8e0; transition: 0.3s; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .product-card-customer:hover { transform: translateY(-8px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color: #d4c5b8; }
+        .product-card-customer .img { background: #f5ece4; border-radius: 20px; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #4a3228; margin-bottom: 0.8rem; overflow: hidden; position: relative; }
+        .product-card-customer .img img { width: 100%; height: 100%; object-fit: cover; }
+        .product-card-customer .img video { width: 100%; height: 100%; object-fit: cover; }
+        .product-card-customer .img .media-indicator { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.6rem; }
+        .product-card-customer h4 { font-weight: 600; font-size: 1rem; color: #2d1b0e; }
+        .product-card-customer .price { font-weight: 700; font-size: 1.2rem; margin: 0.2rem 0; color: #2d1b0e; }
+        .product-card-customer .old-price { text-decoration: line-through; color: #8f9eaa; font-size: 0.8rem; margin-left: 0.4rem; font-weight: 400; }
+        .product-card-customer .offer-tag { background: #c0392b; color: white; padding: 0.1rem 0.5rem; border-radius: 40px; font-size: 0.65rem; font-weight: 600; margin-left: 0.4rem; }
+        .product-card-customer .rating { color: #f5b342; font-size: 0.85rem; }
+        .product-card-customer .stock-alert { font-size: 0.7rem; color: #c0392b; font-weight: 600; }
+        .product-card-customer .size-selector-small { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.4rem 0; }
+        .product-card-customer .size-selector-small .size-chip { padding: 0.15rem 0.6rem; border-radius: 20px; border: 1px solid #e8ddd5; font-size: 0.65rem; font-weight: 500; cursor: pointer; transition: 0.3s; background: white; color: #2d1b0e; user-select: none; }
+        .product-card-customer .size-selector-small .size-chip:hover { border-color: #c0392b; background: #faf6f1; }
+        .product-card-customer .size-selector-small .size-chip.selected { background: #c0392b; color: white; border-color: #c0392b; }
+        .product-card-customer .size-selector-small .size-chip.out-of-stock { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
+        .product-card-customer .selected-size-label { font-size: 0.7rem; color: #6b4f3e; margin: 0.2rem 0; }
+        .filters-section { background: white; border-radius: 28px; padding: 1.5rem 2rem; border: 1px solid #f0e8e0; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .filters-section .filter-group { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+        .filters-section select, .filters-section input { padding: 0.6rem 1.2rem; border-radius: 40px; border: 1px solid #e8ddd5; background: white; font-size: 0.9rem; transition: 0.3s; color: #2d1b0e; }
+        .filters-section select:focus, .filters-section input:focus { border-color: #c0392b; outline: none; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+        .search-bar { display: flex; gap: 0.5rem; background: white; border-radius: 60px; padding: 0.3rem; border: 1px solid #e8ddd5; max-width: 600px; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.3s; }
+        .search-bar:focus-within { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+        .search-bar input { border: none; padding: 0.8rem 1.5rem; flex: 1; border-radius: 60px; font-size: 1rem; outline: none; background: transparent; }
+        .search-bar button { background: #2d1b0e; color: white; border: none; padding: 0.8rem 2rem; border-radius: 60px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .search-bar button:hover { background: #c0392b; }
+        .cart-sidebar { position: fixed; top: 0; right: -460px; width: 420px; height: 100%; background: white; box-shadow: -8px 0 40px rgba(0,0,0,0.1); z-index: 1001; transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1); padding: 2rem; overflow-y: auto; }
+        .cart-sidebar.open { right: 0; }
+        .cart-sidebar .close-cart { float: right; font-size: 1.5rem; cursor: pointer; color: #4a3228; transition: 0.3s; }
+        .cart-sidebar .close-cart:hover { color: #c0392b; transform: rotate(90deg); }
+        .cart-item { display: flex; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #f0e8e0; align-items: center; }
+        .cart-item .qty { display: flex; gap: 0.3rem; align-items: center; }
+        .cart-item .qty button { background: #f5ece4; border: none; padding: 0.2rem 0.6rem; border-radius: 30px; cursor: pointer; font-size: 1rem; }
+        .cart-item .qty button:hover { background: #e8ddd5; }
+        .cart-item .cart-size { font-size: 0.7rem; color: #6b4f3e; background: #f5ece4; padding: 0.1rem 0.5rem; border-radius: 20px; margin-left: 0.3rem; }
+        .checkout-form-section { background: #faf6f1; border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; }
+        .checkout-form-section .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .checkout-form-section .row .field { flex: 1; min-width: 150px; }
+        .checkout-form-section label { font-size: 0.8rem; font-weight: 500; display: block; margin-bottom: 0.3rem; color: #6b4f3e; }
+        .checkout-form-section input, .checkout-form-section textarea, .checkout-form-section select { width: 100%; padding: 0.7rem 1.2rem; border-radius: 40px; border: 1px solid #e8ddd5; background: white; font-size: 0.9rem; transition: 0.3s; }
+        .checkout-form-section input:focus, .checkout-form-section textarea:focus { border-color: #c0392b; outline: none; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+        .payment-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.8rem; margin: 0.5rem 0; }
+        .payment-option { padding: 1rem; border: 2px solid #e8ddd5; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; background: white; }
+        .payment-option:hover { border-color: #c0392b; background: #faf6f1; transform: translateY(-2px); }
+        .payment-option.selected { border-color: #c0392b; background: #f5ece4; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
+        .payment-option i { font-size: 1.8rem; display: block; margin-bottom: 0.3rem; }
+        .payment-option .label { font-size: 0.75rem; font-weight: 500; }
+        .payment-option .sub-label { font-size: 0.6rem; color: #6b4f3e; }
+        .order-summary-box { background: #faf6f1; border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; }
+        .order-summary-box .item { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #e8ddd5; }
+        .order-summary-box .total { font-weight: 700; font-size: 1.2rem; padding-top: 0.5rem; border-top: 2px solid #2d1b0e; margin-top: 0.3rem; }
+        .size-selector { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.5rem 0; max-height: 200px; overflow-y: auto; }
+        .size-option { padding: 0.4rem 0.9rem; border-radius: 40px; border: 2px solid #e8ddd5; background: white; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: 0.3s; user-select: none; min-width: 36px; text-align: center; }
+        .size-option:hover { border-color: #c0392b; background: #faf6f1; transform: scale(1.05); }
+        .size-option.selected { background: #c0392b; color: white; border-color: #c0392b; }
+        .media-upload-area { border: 2px dashed #e8ddd5; border-radius: 20px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; width: 100%; background: #faf6f1; }
+        .media-upload-area:hover { border-color: #c0392b; background: #f5ece4; }
+        .media-upload-area i { font-size: 2.5rem; color: #6b4f3e; margin-bottom: 0.5rem; }
+        .media-preview { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .media-preview .media-item { width: 80px; height: 80px; border-radius: 12px; border: 1px solid #e8ddd5; overflow: hidden; position: relative; background: #faf6f1; }
+        .media-preview .media-item img, .media-preview .media-item video { width: 100%; height: 100%; object-fit: cover; }
+        .media-preview .media-item .remove-media { position: absolute; top: -6px; right: -6px; background: #c0392b; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .media-count { font-size: 0.7rem; color: #6b4f3e; margin-top: 0.3rem; }
+        .coupon-box { background: #f5ece4; padding: 1.2rem 1.5rem; border-radius: 24px; border: 1px dashed #c0392b; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+        .delivery-features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .delivery-feature-card { background: white; border-radius: 24px; padding: 1.5rem; border: 1px solid #f0e8e0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.3s; }
+        .delivery-feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .delivery-feature-card .feature-icon { font-size: 2.2rem; color: #c0392b; margin-bottom: 0.8rem; }
+        .delivery-feature-card h4 { color: #2d1b0e; margin-bottom: 0.5rem; }
+        .pincode-check-box { background: #f5ece4; border-radius: 16px; padding: 1rem; display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; }
+        .pincode-check-box input { flex: 1; min-width: 120px; padding: 0.6rem 1.2rem; border-radius: 40px; border: 1px solid #e8ddd5; background: white; font-size: 0.9rem; }
+        .otp-verification-box { background: #fef9e7; border-radius: 16px; padding: 1rem; border: 2px solid #f39c12; margin-top: 0.5rem; }
+        .otp-verification-box .otp-input-group { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .otp-verification-box .otp-input-group input { flex: 1; min-width: 120px; padding: 0.6rem 1.2rem; border-radius: 40px; border: 1px solid #e8ddd5; background: white; font-size: 0.9rem; }
+        .toggle-switch { position: relative; width: 50px; height: 28px; display: inline-block; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #e8ddd5; transition: .4s; border-radius: 34px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background: white; transition: .4s; border-radius: 50%; }
+        .toggle-switch input:checked + .toggle-slider { background: #c0392b; }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+        .admin-setting-section { background: #faf6f1; border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; border: 1px solid #f0e8e0; }
+        .admin-payment-config { background: #faf6f1; border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0; border: 1px solid #f0e8e0; }
+        .social-links { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; justify-content: center; }
+        .social-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.2rem; border-radius: 40px; background: #faf6f1; border: 1px solid #f0e8e0; text-decoration: none; color: #2d1b0e; font-size: 0.85rem; transition: 0.3s; }
+        .social-link:hover { background: #f5ece4; border-color: #c0392b; transform: translateY(-2px); }
+        .social-link i { font-size: 1.2rem; }
+        footer { border-top: 3px solid #e8d5c8; padding: 2rem 0; margin-top: 2rem; text-align: center; color: #6b4f3e; font-size: 0.85rem; background: linear-gradient(135deg, #ffffff 0%, #fcf8f5 100%); border-radius: 30px 30px 0 0; margin-bottom: 0; }
+        .tracking-timeline { position: relative; padding-left: 1.5rem; border-left: 3px solid #c0392b; }
+        .tracking-timeline .step { padding: 0.5rem 0; position: relative; }
+        .tracking-timeline .step::before { content: ''; position: absolute; left: -1.65rem; top: 0.8rem; width: 12px; height: 12px; border-radius: 50%; background: #e8ddd5; border: 2px solid #c0392b; }
+        .tracking-timeline .step.completed::before { background: #c0392b; }
+        .tracking-timeline .step .step-label { font-weight: 500; font-size: 0.9rem; }
+        .tracking-timeline .step .step-time { font-size: 0.7rem; color: #6b4f3e; }
+        @media (max-width: 700px) {
+            .navbar { flex-direction: column; align-items: stretch; gap: 0.5rem; padding: 0.8rem; }
+            .nav-links { justify-content: center; }
+            .cart-sidebar { width: 100%; right: -100%; }
+            .hero-slider .text h1 { font-size: 2rem; }
+            .hero-slider { padding: 1.5rem; }
+            .search-bar { flex-direction: column; border-radius: 20px; background: transparent; box-shadow: none; }
+            .search-bar input { border-radius: 60px; border: 1px solid #e8ddd5; background: white; }
+            .search-bar button { border-radius: 60px; }
+            .payment-options { grid-template-columns: repeat(2, 1fr); }
+            .chart-row { grid-template-columns: 1fr; }
+            .admin-sidebar { flex: 1 1 100%; }
+            .logo-main { font-size: 2rem; letter-spacing: 5px; }
+            .logo-tagline { font-size: 0.5rem; letter-spacing: 4px; }
+            .modal-content { padding: 1.5rem; }
+            .admin-content { padding: 1.5rem; }
+            .size-selector { max-height: 150px; }
+            .delivery-features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="navbar">
+        <div class="logo" onclick="setPanel('customer')">
+            <div class="logo-main">KI<span class="kiwa-highlight">WA</span></div>
+            <div class="logo-tagline">BEAUTY <span class="dot">·</span> COSMETICS <span class="dot">·</span> CLOTHING</div>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a class="active" data-panel="customer" onclick="setPanel('customer')">Store</a>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-search" onclick="document.getElementById('searchInput').focus()"></i>
+            <i class="fas fa-user" onclick="toggleAccountPanel()"></i>
+            <i class="fas fa-heart" onclick="toggleWishlist()"></i>
+            <i class="fas fa-shopping-bag" onclick="toggleCart()"><span id="cartCount" style="background:#c0392b;color:white;font-size:0.6rem;padding:0.1rem 0.4rem;border-radius:50%;margin-left:0.2rem;">0</span></i>
+        </div>
+    </header>
+
+    <!-- ===== CUSTOMER PANEL ===== -->
+    <div id="customerPanel" class="panel">
+        <div class="hero-slider">
+            <div class="text">
+                <h1>Discover Your <span class="highlight">Style</span></h1>
+                <p>Premium beauty, cosmetics & clothing for the modern you</p>
+                <button class="btn-sm primary" onclick="filterByCategory('All')">Shop Now →</button>
+            </div>
+            <div class="image"><i class="fas fa-spa"></i></div>
+        </div>
+
+        <div style="position:relative;">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products..." oninput="handleSearch(this.value)" />
+                <button onclick="handleSearch(document.getElementById('searchInput').value)"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <select id="filterCategory" onchange="applyFilters()"><option value="all">All Categories</option></select>
+                <select id="filterSort" onchange="applyFilters()">
+                    <option value="popular">Popular</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Rating</option>
+                </select>
+                <select id="filterSize" onchange="applyFilters()">
+                    <option value="all">All Sizes</option>
+                    <option value="S">S</option><option value="M">M</option><option value="L">L</option>
+                    <option value="XL">XL</option><option value="XXL">XXL</option>
+                    <option value="18">18</option><option value="20">20</option><option value="22">22</option>
+                    <option value="24">24</option><option value="26">26</option><option value="28">28</option>
+                    <option value="30">30</option><option value="32">32</option><option value="34">34</option>
+                    <option value="36">36</option><option value="38">38</option><option value="40">40</option>
+                    <option value="42">42</option><option value="44">44</option><option value="46">46</option>
+                    <option value="48">48</option>
+                </select>
+                <input type="number" id="filterPriceMin" placeholder="Min ₹" style="width:80px;" onchange="applyFilters()" />
+                <input type="number" id="filterPriceMax" placeholder="Max ₹" style="width:80px;" onchange="applyFilters()" />
+                <button class="btn-sm primary" onclick="applyFilters()">Apply</button>
+                <button class="btn-sm outline" onclick="resetFilters()">Reset</button>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:1rem 0;">
+            <h2 style="color:#2d1b0e; font-weight:600;">Featured Products</h2>
+            <span style="color:#6b4f3e;" id="productCount">0 products</span>
+        </div>
+        <div class="product-grid-customer" id="productGrid"></div>
+
+        <h2 style="margin:2rem 0 1rem 0; color:#2d1b0e; font-weight:600;">Trending Now</h2>
+        <div class="product-grid-customer" id="recommendedGrid"></div>
+
+        <!-- ===== DELIVERY FEATURES SECTION ===== -->
+        <div style="margin: 3rem 0 2rem 0;">
+            <h2 style="color:#2d1b0e; font-weight:600; margin-bottom:1rem;">🚚 Delivery & Tracking</h2>
+            <p style="color:#6b4f3e; margin-bottom:1rem;">Track your orders, check delivery availability, and get real-time updates.</p>
+            <div class="delivery-features-grid">
+                <div class="delivery-feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-pin"></i></div>
+                    <h4>📍 Pincode Check</h4>
+                    <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.8rem;">Check if delivery is available at your location</p>
+                    <div class="pincode-check-box">
+                        <input type="text" id="pincodeInput" placeholder="Enter pincode" maxlength="6" />
+                        <button class="btn-sm primary" onclick="checkPincode()">Check</button>
+                    </div>
+                    <div id="pincodeResult" style="margin-top:0.5rem;font-size:0.85rem;"></div>
+                </div>
+                <div class="delivery-feature-card">
+                    <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                    <h4>📅 Estimated Delivery</h4>
+                    <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.8rem;">Get estimated delivery date for your orders</p>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                        <span style="font-size:0.9rem;font-weight:500;color:#2d1b0e;">Order #</span>
+                        <input type="text" id="eddOrderInput" placeholder="e.g., #1024" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5; background:white; font-size:0.9rem;" />
+                        <button class="btn-sm primary" onclick="getEDD()">Get EDD</button>
+                    </div>
+                    <div id="eddResult" style="margin-top:0.5rem;font-size:0.85rem;"></div>
+                </div>
+                <div class="delivery-feature-card">
+                    <div class="feature-icon"><i class="fas fa-truck"></i></div>
+                    <h4>📦 Live Tracking</h4>
+                    <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.8rem;">Track your order in real-time</p>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                        <span style="font-size:0.9rem;font-weight:500;color:#2d1b0e;">Order #</span>
+                        <input type="text" id="trackOrderInput" placeholder="e.g., #1024" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5; background:white; font-size:0.9rem;" />
+                        <button class="btn-sm primary" onclick="trackOrder()">Track</button>
+                    </div>
+                    <div id="trackingResult" style="margin-top:0.5rem;"></div>
+                </div>
+                <div class="delivery-feature-card">
+                    <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                    <h4>🔔 Notifications & OTP</h4>
+                    <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.8rem;">Get SMS/WhatsApp updates and verify delivery</p>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                        <span style="font-size:0.9rem;font-weight:500;color:#2d1b0e;">Order #</span>
+                        <input type="text" id="notifyOrderInput" placeholder="e.g., #1024" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5; background:white; font-size:0.9rem;" />
+                        <button class="btn-sm info" onclick="sendNotification()"><i class="fas fa-sms"></i> Send Update</button>
+                    </div>
+                    <div class="otp-verification-box" style="margin-top:0.5rem;">
+                        <div style="font-size:0.85rem;font-weight:500;color:#2d1b0e;margin-bottom:0.3rem;">🔐 Delivery OTP Verification</div>
+                        <div class="otp-input-group">
+                            <input type="text" id="deliveryOtpInput" placeholder="Enter OTP" maxlength="6" style="flex:1; min-width:80px;" />
+                            <button class="btn-sm success" onclick="verifyDeliveryOTP()"><i class="fas fa-check"></i> Verify</button>
+                            <button class="btn-sm primary" onclick="sendDeliveryOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                        </div>
+                        <div id="deliveryOtpStatus" class="otp-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <div id="adminPanel" class="panel panel-hidden">
+        <div class="admin-wrapper">
+            <div class="admin-sidebar">
+                <h3><i class="fas fa-chart-line"></i> Kiwa Admin</h3>
+                <ul>
+                    <li class="active-admin" data-section="dashboard" onclick="switchAdminSection('dashboard')"><i class="fas fa-gauge-high"></i> Dashboard</li>
+                    <li data-section="categories" onclick="switchAdminSection('categories')"><i class="fas fa-tags"></i> Categories</li>
+                    <li data-section="products" onclick="switchAdminSection('products')"><i class="fas fa-cube"></i> Products</li>
+                    <li data-section="orders" onclick="switchAdminSection('orders')"><i class="fas fa-boxes"></i> Orders</li>
+                    <li data-section="payment-config" onclick="switchAdminSection('payment-config')"><i class="fas fa-credit-card"></i> Payment Config</li>
+                    <li data-section="delivery-logistics" onclick="switchAdminSection('delivery-logistics')"><i class="fas fa-route"></i> Delivery</li>
+                    <li data-section="delivery-settings" onclick="switchAdminSection('delivery-settings')"><i class="fas fa-cog"></i> Delivery Settings</li>
+                    <li data-section="marketing" onclick="switchAdminSection('marketing')"><i class="fas fa-tags"></i> Marketing</li>
+                    <li data-section="settings" onclick="switchAdminSection('settings')"><i class="fas fa-cog"></i> Settings</li>
+                </ul>
+                <hr style="border-color:#f0e8e0; margin:1.2rem 0;" />
+                <div style="font-size:0.8rem; color:#6b4f3e;"><i class="fas fa-circle" style="color:#c0392b;"></i> online · <span id="liveOrdersCount">0</span> new orders</div>
+                <button class="btn-sm outline" onclick="setPanel('customer')" style="margin-top:1rem;width:100%;">← Back to Store</button>
+            </div>
+
+            <div class="admin-content" id="adminContent">
+                <div id="section-dashboard">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">📊 Dashboard</h2>
+                    <div class="admin-stats">
+                        <div class="stat-card"><span>Revenue</span><div class="number" id="dashRevenue">₹0</div></div>
+                        <div class="stat-card"><span>Orders</span><div class="number" id="dashOrders">0</div></div>
+                        <div class="stat-card"><span>In Transit</span><div class="number" id="dashTransit">0</div></div>
+                        <div class="stat-card"><span>Products</span><div class="number" id="dashProducts">0</div></div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-box"><h4>Revenue (weekly)</h4><canvas id="revenueChart"></canvas></div>
+                        <div class="chart-box"><h4>Popular products</h4><canvas id="popularChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div id="section-categories" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">🏷️ Categories</h2>
+                    <div class="admin-actions"><button class="btn-sm primary" onclick="openCategoryModal()"><i class="fas fa-plus"></i> New Category</button></div>
+                    <table class="admin-table"><thead><tr><th>Category</th><th>Slug</th><th>Products</th><th>Action</th></tr></thead><tbody id="categoryTableBody"></tbody></table>
+                </div>
+
+                <div id="section-products" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">📦 Products</h2>
+                    <div class="admin-actions">
+                        <button class="btn-sm primary" onclick="openProductModal()"><i class="fas fa-plus"></i> Add Product</button>
+                        <button class="btn-sm green" onclick="bulkUpload()"><i class="fas fa-upload"></i> Bulk Upload</button>
+                        <button class="btn-sm" onclick="exportProducts()"><i class="fas fa-file-export"></i> Export</button>
+                    </div>
+                    <table class="admin-table"><thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Offer</th><th>Sizes</th><th>Stock</th><th>Media</th><th>Action</th></tr></thead><tbody id="productTableBody"></tbody></table>
+                </div>
+
+                <div id="section-orders" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">🚚 Orders</h2>
+                    <div class="admin-actions">
+                        <button class="btn-sm primary" onclick="viewInvoicePrompt()"><i class="fas fa-file-pdf"></i> View Invoice</button>
+                        <button class="btn-sm green" onclick="viewLabelPrompt()"><i class="fas fa-tag"></i> View Label</button>
+                    </div>
+                    <table class="admin-table"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th><th>Action</th></tr></thead><tbody id="orderTableBody"></tbody></table>
+                </div>
+
+                <div id="section-payment-config" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">💳 Payment Configuration</h2>
+                    <div class="admin-payment-config"><h4>🏦 Net Banking Details</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+                            <div style="flex:1; min-width:200px;"><label>Bank Name</label><input type="text" id="configBankName" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:200px;"><label>Account Number</label><input type="text" id="configAccountNo" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+                            <div style="flex:1; min-width:200px;"><label>IFSC Code</label><input type="text" id="configIfsc" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:200px;"><label>Account Holder</label><input type="text" id="configAccountHolder" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                    </div>
+                    <div class="admin-payment-config"><h4>📱 UPI Configuration</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+                            <div style="flex:1; min-width:200px;"><label>UPI ID</label><input type="text" id="configUpiId" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:200px;"><label>QR Code URL</label><input type="text" id="configUpiQr" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                    </div>
+                    <div class="admin-payment-config"><h4>💳 Card Payment</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.8rem;">
+                            <div style="flex:1; min-width:200px;"><label>Gateway</label><input type="text" id="configCardGateway" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:200px;"><label>Merchant ID</label><input type="text" id="configMerchantId" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                    </div>
+                    <button class="btn-sm primary" onclick="savePaymentConfig()" style="margin-top:1rem;"><i class="fas fa-save"></i> Save</button>
+                </div>
+
+                <div id="section-delivery-logistics" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">📦 Delivery Logistics</h2>
+                    <div class="admin-actions">
+                        <button class="btn-sm primary" onclick="openDeliveryPartnerModal()"><i class="fas fa-user-plus"></i> Add Partner</button>
+                        <button class="btn-sm green" onclick="openAssignOrderModal()"><i class="fas fa-truck"></i> Assign Order</button>
+                    </div>
+                    <div id="deliveryPartnerList"></div>
+                    <div style="margin-top:1.5rem;">
+                        <h4 style="color:#2d1b0e; margin-bottom:0.5rem;">📋 Assigned Orders</h4>
+                        <div id="assignedOrdersList"></div>
+                    </div>
+                </div>
+
+                <div id="section-delivery-settings" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">⚙️ Delivery Settings</h2>
+                    
+                    <div class="admin-setting-section">
+                        <h4 style="margin-bottom:0.8rem;">🔐 Delivery Panel Access</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label>Username</label><input type="text" id="deliveryUsername" value="delivery" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:150px;"><label>Password</label><input type="password" id="deliveryPassword" value="delivery123" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <button class="btn-sm primary" onclick="saveDeliveryCredentials()"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-top:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label>Forgot Password? Enter Mobile</label><input type="text" id="deliveryForgotMobile" placeholder="Enter mobile number" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <button class="btn-sm info" onclick="sendDeliveryForgotOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                        </div>
+                        <div id="deliveryForgotOTPSection" style="display:none; margin-top:0.5rem; padding:1rem; background:#fef9e7; border-radius:12px; border:2px solid #f39c12;">
+                            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                                <input type="text" id="deliveryForgotOTPInput" placeholder="Enter OTP" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5;" />
+                                <button class="btn-sm success" onclick="verifyDeliveryForgotOTP()"><i class="fas fa-check"></i> Verify OTP</button>
+                                <button class="btn-sm outline" onclick="document.getElementById('deliveryForgotOTPSection').style.display='none'">Cancel</button>
+                            </div>
+                            <div id="deliveryForgotOTPStatus" style="margin-top:0.3rem; font-size:0.85rem;"></div>
+                        </div>
+                    </div>
+
+                    <div class="admin-setting-section">
+                        <h4 style="margin-bottom:0.8rem;">📍 Serviceable Pincodes</h4>
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                            <input type="text" id="newPincode" placeholder="Enter pincode" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5;" />
+                            <button class="btn-sm primary" onclick="addServiceablePincode()"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                        <div id="pincodeList" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;"></div>
+                    </div>
+
+                    <div class="admin-setting-section">
+                        <h4 style="margin-bottom:0.8rem;">🚚 Courier Partners</h4>
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                            <input type="text" id="newCourierPartner" placeholder="Courier name" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5;" />
+                            <button class="btn-sm primary" onclick="addCourierPartner()"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                        <div id="courierPartnerList" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;"></div>
+                    </div>
+
+                    <div class="admin-setting-section">
+                        <h4 style="margin-bottom:0.8rem;">📋 Delivery Partners</h4>
+                        <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.5rem;">Manage delivery partners who will receive orders</p>
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                            <input type="text" id="newDeliveryPartner" placeholder="Partner name" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5;" />
+                            <button class="btn-sm primary" onclick="addDeliveryPartner()"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                        <div id="deliveryPartnerListAdmin" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.5rem;"></div>
+                    </div>
+
+                    <div class="admin-setting-section">
+                        <h4 style="margin-bottom:0.8rem;">📨 SMS Gateway Configuration</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label>Provider</label>
+                                <select id="smsProvider" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;">
+                                    <option value="textlocal">TextLocal</option><option value="twilio">Twilio</option>
+                                    <option value="msg91">MSG91</option><option value="fast2sms">Fast2SMS</option>
+                                </select>
+                            </div>
+                            <div style="flex:1; min-width:150px;"><label>API Key</label><input type="text" id="smsApiKey" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label>Sender ID</label><input type="text" id="smsSenderId" value="KIWAOTP" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:150px;"><label>Template</label><input type="text" id="smsTemplate" value="Your Kiwa OTP is: {OTP}. Valid for 5 minutes." style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <button class="btn-sm primary" onclick="saveSMSConfig()"><i class="fas fa-save"></i> Save SMS Config</button>
+                        <button class="btn-sm green" onclick="testSMS()" style="margin-left:0.5rem;"><i class="fas fa-paper-plane"></i> Test SMS</button>
+                    </div>
+                </div>
+
+                <div id="section-marketing" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">🎯 Marketing</h2>
+                    <div class="coupon-box">
+                        <span><i class="fas fa-ticket"></i> Coupon Engine</span>
+                        <div style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+                            <input type="text" id="couponCode" placeholder="Code" value="SUMMER20" style="padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" />
+                            <select id="couponType" style="padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;"><option value="percentage">%</option><option value="flat">Flat</option></select>
+                            <input type="number" id="couponAmount" placeholder="Amount" value="20" style="width:80px;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" />
+                            <button class="btn-sm primary" onclick="createCoupon()">Create</button>
+                        </div>
+                    </div>
+                    <div id="couponList" style="display:flex; gap:2rem; flex-wrap:wrap; margin:1.5rem 0;"></div>
+                </div>
+
+                <div id="section-settings" class="panel-hidden">
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">⚙️ Admin Settings</h2>
+                    <div class="admin-setting-section">
+                        <h4>🔐 Admin Login</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label>Username</label><input type="text" id="adminUsername" value="admin" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <button class="btn-sm primary" onclick="updateUsername()">Update</button>
+                        </div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                            <div style="flex:1; min-width:150px;"><label>New Password</label><input type="password" id="adminNewPassword" placeholder="New password" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <button class="btn-sm primary" onclick="updatePassword()">Update Password</button>
+                        </div>
+                        <div style="margin-top:0.5rem; display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                            <div style="flex:1; min-width:150px;"><label>Forgot Password?</label><input type="text" id="forgotEmail" placeholder="Enter mobile number" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <button class="btn-sm info" onclick="sendRealOTP()">Send OTP</button>
+                        </div>
+                        <div id="otpSection" style="display:none; margin-top:0.5rem; padding:1rem; background:#fef9e7; border-radius:12px; border:2px solid #f39c12;">
+                            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                                <input type="text" id="otpInput" placeholder="Enter OTP" style="flex:1; min-width:100px; padding:0.5rem 1rem; border-radius:40px; border:1px solid #e8ddd5;" />
+                                <span id="otpTimer" style="font-size:0.8rem; color:#c0392b; font-weight:600;">60s</span>
+                                <button class="btn-sm success" onclick="verifyRealOTP()">Verify</button>
+                                <button class="btn-sm outline" onclick="resetOTP()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-setting-section">
+                        <h4>🌐 Social Media</h4>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label><i class="fab fa-instagram" style="color:#E4405F;"></i> Instagram</label><input type="url" id="socialInstagram" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:150px;"><label><i class="fab fa-facebook" style="color:#1877F2;"></i> Facebook</label><input type="url" id="socialFacebook" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                            <div style="flex:1; min-width:150px;"><label><i class="fab fa-twitter" style="color:#1DA1F2;"></i> Twitter</label><input type="url" id="socialTwitter" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:150px;"><label><i class="fab fa-youtube" style="color:#FF0000;"></i> YouTube</label><input type="url" id="socialYoutube" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <button class="btn-sm primary" onclick="saveSocialLinks()"><i class="fas fa-save"></i> Save</button>
+                    </div>
+                    <div class="admin-setting-section">
+                        <h4>ℹ️ Website Info</h4>
+                        <div style="margin-bottom:0.5rem;"><label>Description</label><textarea id="websiteDescription" rows="2" style="width:100%;padding:0.5rem 1rem;border-radius:16px;border:1px solid #e8ddd5;">Kiwa - Your destination for beauty, cosmetics & premium clothing.</textarea></div>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                            <div style="flex:1; min-width:150px;"><label>Email</label><input type="email" id="contactEmail" value="support@kiwa.com" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                            <div style="flex:1; min-width:150px;"><label>Phone</label><input type="text" id="contactPhone" value="+91 9876543210" style="width:100%;padding:0.5rem 1rem;border-radius:40px;border:1px solid #e8ddd5;" /></div>
+                        </div>
+                        <button class="btn-sm primary" onclick="saveWebsiteInfo()" style="margin-top:0.5rem;"><i class="fas fa-save"></i> Save</button>
+                    </div>
+                    <div class="admin-setting-section">
+                        <h4>🔘 Feature Toggles</h4>
+                        <div style="display:flex; flex-wrap:wrap; gap:1.5rem;">
+                            <div style="display:flex; align-items:center; gap:0.5rem;"><span>Show Social Media</span><label class="toggle-switch"><input type="checkbox" id="toggleSocialFooter" checked onchange="saveToggles()" /><span class="toggle-slider"></span></label></div>
+                            <div style="display:flex; align-items:center; gap:0.5rem;"><span>Show Contact</span><label class="toggle-switch"><input type="checkbox" id="toggleContactFooter" checked onchange="saveToggles()" /><span class="toggle-slider"></span></label></div>
+                            <div style="display:flex; align-items:center; gap:0.5rem;"><span>Show Description</span><label class="toggle-switch"><input type="checkbox" id="toggleDescription" checked onchange="saveToggles()" /><span class="toggle-slider"></span></label></div>
+                            <div style="display:flex; align-items:center; gap:0.5rem;"><span>Guest Checkout</span><label class="toggle-switch"><input type="checkbox" id="toggleGuestCheckout" checked onchange="saveToggles()" /><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DELIVERY PANEL ===== -->
+    <div id="deliveryPanel" class="panel panel-hidden">
+        <div style="padding:1.5rem 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+                <div>
+                    <h2 style="font-weight:600; font-size:1.8rem; color:#2d1b0e;">🚚 Delivery App</h2>
+                    <p style="color:#6b4f3e;">Welcome, <strong id="deliveryUserName">Delivery Partner</strong>! Manage your assigned orders.</p>
+                </div>
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                    <span class="badge success" id="deliveryStatusBadge">● Online</span>
+                    <button class="btn-sm outline" onclick="toggleDeliveryStatus()" id="deliveryStatusBtn">Go Offline</button>
+                    <button class="btn-sm primary" onclick="setPanel('customer')">← Store</button>
+                </div>
+            </div>
+
+            <div class="admin-stats">
+                <div class="stat-card"><span>Assigned</span><div class="number" id="deliveryAssigned">0</div></div>
+                <div class="stat-card"><span>In Transit</span><div class="number" id="deliveryTransit">0</div></div>
+                <div class="stat-card"><span>Delivered</span><div class="number" id="deliveryDelivered">0</div></div>
+                <div class="stat-card"><span>Pending</span><div class="number" id="deliveryPending">0</div></div>
+            </div>
+
+            <div style="background:white; border-radius:32px; padding:1.5rem; border:1px solid #f0e8e0; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom:1.5rem;">
+                <h3 style="color:#2d1b0e;">📋 Your Delivery Logistics</h3>
+                <div id="deliveryLogContainer" class="delivery-log-container"></div>
+            </div>
+
+            <div style="background:white; border-radius:32px; padding:1.5rem; border:1px solid #f0e8e0; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                <h3 style="color:#2d1b0e;">📦 Your Assigned Orders</h3>
+                <table class="admin-table">
+                    <thead><tr><th>Order</th><th>Customer</th><th>Address</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="deliveryOrderTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CART SIDEBAR ===== -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <span class="close-cart" onclick="toggleCart()">&times;</span>
+        <h3 style="color:#2d1b0e; font-weight:600;">Your Cart</h3>
+        <div id="cartItems"></div>
+        <div style="background:#faf6f1;border-radius:16px;padding:1.5rem;margin:1rem 0;">
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;"><span>Shipping</span><span id="cartShipping">₹0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;"><span>Tax</span><span id="cartTax">₹0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.4rem 0;font-weight:700;font-size:1.2rem;"><span>Total</span><span id="cartTotal">₹0</span></div>
+        </div>
+        <button class="btn-sm primary" style="width:100%;" onclick="checkout()">Proceed to Checkout</button>
+        <button class="btn-sm outline" style="width:100%;margin-top:0.5rem;" id="guestCheckoutBtn" onclick="guestCheckout()">Guest Checkout</button>
+    </div>
+
+    <!-- ===== CHECKOUT MODAL ===== -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:#2d1b0e;">🛒 Checkout</h3>
+            <div class="checkout-form-section">
+                <h4 style="margin-bottom:0.5rem; color:#2d1b0e;">👤 Customer Details</h4>
+                <div class="row"><div class="field"><label>Full Name *</label><input type="text" id="checkoutName" /></div><div class="field"><label>Email *</label><input type="email" id="checkoutEmail" /></div></div>
+                <div class="row"><div class="field"><label>Mobile Number *</label><input type="tel" id="checkoutPhone" /></div><div class="field"><label>Pincode *</label><input type="text" id="checkoutPincode" /></div></div>
+                <div class="row"><div class="field" style="flex:2;"><label>Delivery Address *</label><textarea id="checkoutAddress" rows="2"></textarea></div></div>
+                <div class="row"><div class="field"><label>City *</label><input type="text" id="checkoutCity" /></div><div class="field"><label>State *</label><input type="text" id="checkoutState" /></div></div>
+            </div>
+            <div class="checkout-form-section">
+                <h4 style="margin-bottom:0.5rem; color:#2d1b0e;">💳 Payment Options</h4>
+                <div class="payment-options" id="paymentOptions">
+                    <div class="payment-option selected" data-value="cod" onclick="selectPayment('cod')"><i class="fas fa-money-bill-wave" style="color:#c0392b;"></i><div class="label">Cash on Delivery</div><div class="sub-label">Pay when delivered</div></div>
+                    <div class="payment-option" data-value="upi" onclick="selectPayment('upi')"><i class="fas fa-mobile-alt" style="color:#6c5ce7;"></i><div class="label">UPI</div><div class="sub-label">Google Pay, PhonePe</div></div>
+                    <div class="payment-option" data-value="card" onclick="selectPayment('card')"><i class="fas fa-credit-card" style="color:#0984e3;"></i><div class="label">Credit/Debit Card</div><div class="sub-label">Visa, Mastercard</div></div>
+                    <div class="payment-option" data-value="netbanking" onclick="selectPayment('netbanking')"><i class="fas fa-university" style="color:#e17055;"></i><div class="label">Net Banking</div><div class="sub-label">All major banks</div></div>
+                </div>
+            </div>
+            <div id="paymentDetailsContainer" style="display:none;">
+                <div style="background:#faf6f1;border-radius:16px;padding:1.2rem;margin:0.8rem 0;border:2px solid #c0392b;">
+                    <div id="paymentDetailsContent"></div>
+                </div>
+                <div style="background:#fef9e7;border-radius:16px;padding:1rem;border:2px solid #f39c12;">
+                    <h4 style="margin-bottom:0.5rem; color:#2d1b0e;">🔐 Payment Verification</h4>
+                    <p style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.5rem;">After payment, enter the reference number to confirm your order.</p>
+                    <div style="background:white;border-radius:12px;padding:0.8rem;border:2px solid #c0392b;">
+                        <input type="text" id="paymentRefNumber" placeholder="Enter payment reference number" style="width:100%;padding:0.6rem 1rem;border-radius:40px;border:1px solid #e8ddd5;font-size:0.9rem;" />
+                    </div>
+                </div>
+            </div>
+            <div class="order-summary-box">
+                <h4 style="margin-bottom:0.5rem; color:#2d1b0e;">📋 Order Summary</h4>
+                <div id="checkoutOrderItems"></div>
+                <div class="item"><span>Subtotal</span><span id="checkoutSubtotal">₹0</span></div>
+                <div class="item"><span>Shipping</span><span id="checkoutShipping">₹0</span></div>
+                <div class="item"><span>Tax (5%)</span><span id="checkoutTax">₹0</span></div>
+                <div class="total"><span>Total</span><span id="checkoutGrandTotal">₹0</span></div>
+            </div>
+            <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
+                <button class="btn-sm primary" id="placeOrderBtn" style="flex:1; padding:0.8rem; font-size:1rem;" onclick="placeOrder()"><i class="fas fa-check"></i> Place Order</button>
+                <button class="btn-sm" onclick="document.getElementById('checkoutModal').classList.remove('show')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OTHER MODALS ===== -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:#2d1b0e;">My Account</h3>
+            <div class="input-group"><label>Name</label><input type="text" id="accountName" /></div>
+            <div class="input-group"><label>Email</label><input type="email" id="accountEmail" /></div>
+            <div class="input-group"><label>Phone</label><input type="text" id="accountPhone" /></div>
+            <div class="input-group"><label>Address</label><textarea id="accountAddress" rows="2"></textarea></div>
+            <button class="btn-sm primary" onclick="saveAccount()">Save Profile</button>
+            <hr style="margin:1rem 0; border-color:#f0e8e0;" />
+            <h4 style="color:#2d1b0e;">Order History</h4>
+            <div id="orderHistory"></div>
+            <h4 style="margin-top:1rem; color:#2d1b0e;">Wishlist</h4>
+            <div id="wishlistDisplay"></div>
+            <button class="btn-sm" onclick="document.getElementById('accountModal').classList.remove('show')">Close</button>
+        </div>
+    </div>
+
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h3 id="previewModalTitle" style="color:#2d1b0e;">Invoice Preview</h3>
+            <div id="previewContent" style="background:#faf6f1;border-radius:16px;padding:1.5rem;border:1px solid #f0e8e0;margin:1rem 0;"></div>
+            <div style="display:flex; gap:0.8rem; margin-top:1rem; flex-wrap:wrap;">
+                <button class="btn-sm primary" onclick="downloadPreview()"><i class="fas fa-download"></i> Download PDF</button>
+                <button class="btn-sm" onclick="printPreview()"><i class="fas fa-print"></i> Print</button>
+                <button class="btn-sm" onclick="document.getElementById('previewModal').classList.remove('show')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PRODUCT MODAL ===== -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 id="productModalTitle" style="color:#2d1b0e;">Add Product</h3>
+            <div class="input-group"><label>Product Name</label><input type="text" id="pName" /></div>
+            <div class="input-group"><label>Category</label><select id="pCategory"><option value="">Select Category</option></select></div>
+            <div class="input-group"><label>Regular Price (₹)</label><input type="number" id="pPrice" step="0.01" /></div>
+            <div class="input-group"><label>Offer Price (₹)</label><input type="number" id="pOfferPrice" step="0.01" placeholder="Optional" /></div>
+            <div class="input-group"><label>Stock</label><input type="number" id="pStock" /></div>
+            <div class="input-group"><label>Description</label><textarea id="pDescription" rows="2"></textarea></div>
+            <div style="flex-direction:column; align-items:flex-start; width:100%; margin-bottom:0.8rem;">
+                <label style="font-weight:500;">Sizes (click to select)</label>
+                <div class="size-selector" id="sizeSelector">
+                    <span class="size-option" data-size="S" onclick="toggleSize('S')">S</span>
+                    <span class="size-option" data-size="M" onclick="toggleSize('M')">M</span>
+                    <span class="size-option" data-size="L" onclick="toggleSize('L')">L</span>
+                    <span class="size-option" data-size="XL" onclick="toggleSize('XL')">XL</span>
+                    <span class="size-option" data-size="XXL" onclick="toggleSize('XXL')">XXL</span>
+                    <span class="size-option" data-size="18" onclick="toggleSize('18')">18</span>
+                    <span class="size-option" data-size="20" onclick="toggleSize('20')">20</span>
+                    <span class="size-option" data-size="22" onclick="toggleSize('22')">22</span>
+                    <span class="size-option" data-size="24" onclick="toggleSize('24')">24</span>
+                    <span class="size-option" data-size="26" onclick="toggleSize('26')">26</span>
+                    <span class="size-option" data-size="28" onclick="toggleSize('28')">28</span>
+                    <span class="size-option" data-size="30" onclick="toggleSize('30')">30</span>
+                    <span class="size-option" data-size="32" onclick="toggleSize('32')">32</span>
+                    <span class="size-option" data-size="34" onclick="toggleSize('34')">34</span>
+                    <span class="size-option" data-size="36" onclick="toggleSize('36')">36</span>
+                    <span class="size-option" data-size="38" onclick="toggleSize('38')">38</span>
+                    <span class="size-option" data-size="40" onclick="toggleSize('40')">40</span>
+                    <span class="size-option" data-size="42" onclick="toggleSize('42')">42</span>
+                    <span class="size-option" data-size="44" onclick="toggleSize('44')">44</span>
+                    <span class="size-option" data-size="46" onclick="toggleSize('46')">46</span>
+                    <span class="size-option" data-size="48" onclick="toggleSize('48')">48</span>
+                </div>
+                <div style="font-size:0.85rem; color:#6b4f3e; margin-top:0.3rem;"><strong>Selected:</strong> <span id="selectedSizesDisplay">None</span></div>
+            </div>
+            <div style="flex-direction:column; align-items:flex-start; width:100%; margin-bottom:0.8rem;">
+                <label style="font-weight:500;">Upload Images & Videos</label>
+                <div class="media-upload-area" onclick="document.getElementById('pMedia').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click or drag & drop to upload</p>
+                    <input type="file" id="pMedia" accept="image/*,video/*" multiple style="display:none;" onchange="handleMediaUpload(event)" />
+                </div>
+                <div id="mediaPreview" class="media-preview"></div>
+                <div class="media-count" id="mediaCount">0 files selected</div>
+            </div>
+            <div style="display:flex; gap:0.8rem; margin-top:1rem;">
+                <button class="btn-sm primary" onclick="saveProduct()"><i class="fas fa-save"></i> Save Product</button>
+                <button class="btn-sm" onclick="document.getElementById('productModal').classList.remove('show')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <h3 id="categoryModalTitle" style="color:#2d1b0e;">Add Category</h3>
+            <div class="input-group"><label>Category Name</label><input type="text" id="catName" /></div>
+            <div class="input-group"><label>Slug</label><input type="text" id="catSlug" placeholder="auto-generate" /></div>
+            <button class="btn-sm primary" onclick="saveCategory()">Save</button>
+            <button class="btn-sm" onclick="document.getElementById('categoryModal').classList.remove('show')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="deliveryPartnerModal" class="modal">
+        <div class="modal-content">
+            <h3 id="deliveryPartnerModalTitle" style="color:#2d1b0e;">Add Delivery Partner</h3>
+            <div class="input-group"><label>Name</label><input type="text" id="dpName" /></div>
+            <div class="input-group"><label>Email</label><input type="email" id="dpEmail" /></div>
+            <div class="input-group"><label>Phone</label><input type="text" id="dpPhone" /></div>
+            <button class="btn-sm primary" onclick="saveDeliveryPartner()">Save</button>
+            <button class="btn-sm" onclick="document.getElementById('deliveryPartnerModal').classList.remove('show')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- ===== ASSIGN ORDER MODAL ===== -->
+    <div id="assignOrderModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:#2d1b0e;">📦 Assign Order to Delivery Partner</h3>
+            <div class="input-group"><label>Order ID</label>
+                <select id="assignOrderSelect"><option value="">Select Order</option></select>
+            </div>
+            <div class="input-group"><label>Delivery Partner</label>
+                <select id="assignPartnerSelect"><option value="">Select Partner</option></select>
+            </div>
+            <div style="display:flex; gap:0.8rem; margin-top:1rem;">
+                <button class="btn-sm primary" onclick="confirmAssignOrder()"><i class="fas fa-check"></i> Assign</button>
+                <button class="btn-sm" onclick="document.getElementById('assignOrderModal').classList.remove('show')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <footer id="siteFooter">
+        <div id="footerDescription" style="margin-bottom:0.8rem;"></div>
+        <div id="footerSocialLinks" class="social-links" style="justify-content:center;"></div>
+        <div id="footerContact" style="margin-top:0.8rem;"></div>
+        <div style="margin-top:0.8rem;">© 2026 Kiwa — Beauty · Cosmetics · Clothing</div>
+    </footer>
+</div>
+
+<script>
+// ============================================
+// DATA
+// ============================================
+let products = [
+    { id: 1, name: 'Wool Fedora', category: 'Apparel', price: 89, offerPrice: null, oldPrice: 120, rating: 4.5, sizes: ['S','M','L'], stock: 8, image: 'hat-cowboy', images: [], videos: [], description: 'Classic wool fedora hat', featured: true, popular: true },
+    { id: 2, name: 'Canvas Tote', category: 'Accessories', price: 45, offerPrice: 39, oldPrice: null, rating: 4.8, sizes: ['One Size'], stock: 34, image: 'bag-shopping', images: [], videos: [], description: 'Eco-friendly canvas tote bag', featured: true, popular: true },
+    { id: 3, name: 'Steel Chrono', category: 'Accessories', price: 210, offerPrice: 189, oldPrice: 280, rating: 4.2, sizes: ['One Size'], stock: 2, image: 'watch', images: [], videos: [], description: 'Premium steel chronograph watch', featured: true, popular: true },
+    { id: 4, name: 'Ceramic Mug', category: 'Kitchen', price: 28, offerPrice: null, oldPrice: null, rating: 4.9, sizes: ['One Size'], stock: 45, image: 'mug-saucer', images: [], videos: [], description: 'Handcrafted ceramic mug', featured: false, popular: true },
+    { id: 5, name: 'Leather Belt', category: 'Accessories', price: 35, offerPrice: 28, oldPrice: 50, rating: 4.3, sizes: ['M','L','XL'], stock: 12, image: 'belt', images: [], videos: [], description: 'Genuine leather belt', featured: false, popular: false },
+    { id: 6, name: 'Silk Scarf', category: 'Apparel', price: 55, offerPrice: null, oldPrice: null, rating: 4.6, sizes: ['One Size'], stock: 18, image: 'scarf', images: [], videos: [], description: 'Luxury silk scarf', featured: false, popular: false },
+    { id: 7, name: 'Running Shoes', category: 'Footwear', price: 120, offerPrice: 99, oldPrice: 160, rating: 4.7, sizes: ['8','9','10','11'], stock: 6, image: 'shoe-prints', images: [], videos: [], description: 'Comfortable running shoes', featured: true, popular: false },
+    { id: 8, name: 'Cotton Gloves', category: 'Apparel', price: 15, offerPrice: null, oldPrice: null, rating: 4.1, sizes: ['S','M','L'], stock: 28, image: 'gloves', images: [], videos: [], description: 'Soft cotton gloves', featured: false, popular: false }
+];
+
+let categories = [
+    { id: 'cat1', name: 'Apparel', slug: 'apparel' },
+    { id: 'cat2', name: 'Accessories', slug: 'accessories' },
+    { id: 'cat3', name: 'Footwear', slug: 'footwear' },
+    { id: 'cat4', name: 'Kitchen', slug: 'kitchen' }
+];
+
+let orders = [];
+let cart = [];
+let wishlist = [];
+let currentUser = { name: 'John Doe', email: 'john@example.com', phone: '+91 9876543210', address: '123, MG Road, Mumbai' };
+let selectedSizes = [];
+let selectedPayment = 'cod';
+let deliveryPartners = ['Rahul Kumar', 'Priya Sharma', 'Amit Patel'];
+let courierPartners = ['Shiprocket', 'Delhivery', 'DTDC', 'XpressBees'];
+let serviceablePincodes = ['110001', '110002', '400001', '400002', '500001', '600001', '700001', '201301', '302001', '411001'];
+let productMedia = [];
+let editingProductId = null;
+let assignedOrders = [];
+
+// Delivery credentials
+let deliveryCredentials = {
+    username: 'delivery',
+    password: 'delivery123'
+};
+
+// Delivery status
+let isDeliveryOnline = true;
+
+// Admin credentials
+let adminCredentials = {
+    username: 'admin',
+    password: 'admin123'
+};
+
+// SMS Configuration
+let smsConfig = {
+    provider: 'textlocal',
+    apiKey: '',
+    senderId: 'KIWAOTP',
+    template: 'Your Kiwa OTP is: {OTP}. Valid for 5 minutes.'
+};
+
+// Website settings
+let websiteSettings = {
+    description: 'Kiwa - Your destination for beauty, cosmetics & premium clothing.',
+    contactEmail: 'support@kiwa.com',
+    contactPhone: '+91 9876543210',
+    social: { instagram: '', facebook: '', twitter: '', youtube: '', snapchat: '' },
+    toggles: { socialFooter: true, contactFooter: true, showDescription: true, guestCheckout: true }
+};
+
+// OTP storage
+let otpStorage = { code: null, timer: null, countdown: 0, mobile: null };
+let deliveryOTPStorage = { code: null, verified: false, expiry: null };
+
+// Payment config
+let paymentConfig = {
+    netbanking: { bankName: 'HDFC Bank', accountNo: '12345678901234', ifsc: 'HDFC0001234', accountHolder: 'Kiwa E-Commerce Pvt Ltd' },
+    upi: { upiId: 'kiwa@upi', qrCode: '' },
+    card: { gateway: 'Razorpay', merchantId: 'merchant_123', apiKey: 'rzp_live_xxxx', secretKey: 'secret_xxxx' }
+};
+
+// ============================================
+// TOAST
+// ============================================
+function showToast(msg, dur = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ============================================
+// PANEL TOGGLE
+// ============================================
+function setPanel(panel) {
+    document.getElementById('customerPanel').classList.toggle('panel-hidden', panel !== 'customer');
+    document.getElementById('adminPanel').classList.toggle('panel-hidden', panel !== 'admin');
+    document.getElementById('deliveryPanel').classList.toggle('panel-hidden', panel !== 'delivery');
+    document.querySelectorAll('#navLinks a').forEach(a => a.classList.toggle('active', a.dataset.panel === panel));
+    if (panel === 'customer') { refreshStore(); updateFooter(); }
+    else if (panel === 'admin') { setTimeout(initCharts, 200); refreshStore(); renderAdminOrders(); loadPaymentConfig(); updateDashboardStats(); loadSettings(); loadSMSConfig(); renderDeliverySettings(); }
+    else if (panel === 'delivery') { document.getElementById('deliveryUserName').textContent = deliveryCredentials.username; renderDeliveryOrders(); renderDeliveryLogs(); updateDeliveryStats(); }
+}
+
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        const password = prompt('Enter admin password:');
+        if (password === adminCredentials.password) setPanel('admin');
+        else if (password !== null) showToast('❌ Incorrect password!');
+    }
+    if (e.ctrlKey && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+        e.preventDefault();
+        const password = prompt('Enter delivery password:');
+        if (password === deliveryCredentials.password) setPanel('delivery');
+        else if (password !== null) showToast('❌ Incorrect password!');
+    }
+});
+
+// ============================================
+// ADMIN SIDEBAR NAVIGATION
+// ============================================
+function switchAdminSection(section) {
+    document.querySelectorAll('.admin-sidebar li').forEach(li => li.classList.remove('active-admin'));
+    document.querySelector(`.admin-sidebar li[data-section="${section}"]`)?.classList.add('active-admin');
+    document.querySelectorAll('#adminContent > div').forEach(div => div.classList.add('panel-hidden'));
+    document.getElementById(`section-${section}`)?.classList.remove('panel-hidden');
+    if (section === 'dashboard') { setTimeout(initCharts, 100); updateDashboardStats(); }
+    if (section === 'payment-config') loadPaymentConfig();
+    if (section === 'settings') { loadSettings(); loadSMSConfig(); }
+    if (section === 'delivery-logistics') { renderDeliveryPartnersAdmin(); renderAssignedOrders(); }
+    if (section === 'delivery-settings') { renderDeliverySettings(); }
+}
+
+// ============================================
+// DASHBOARD STATS
+// ============================================
+function updateDashboardStats() {
+    const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+    document.getElementById('dashRevenue').textContent = '₹' + totalRevenue;
+    document.getElementById('dashOrders').textContent = orders.length;
+    document.getElementById('dashTransit').textContent = orders.filter(o => o.status === 'In Transit').length;
+    document.getElementById('dashProducts').textContent = products.length;
+    document.getElementById('liveOrdersCount').textContent = orders.filter(o => o.status !== 'Delivered').length;
+}
+
+// ============================================
+// CHARTS
+// ============================================
+function initCharts() {
+    const revCtx = document.getElementById('revenueChart')?.getContext('2d');
+    if (revCtx) {
+        new Chart(revCtx, {
+            type: 'line',
+            data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{ label: 'Revenue', data: [3200,4500,2800,5100,6700,4900,5800], borderColor: '#c0392b', fill: false }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+    const popCtx = document.getElementById('popularChart')?.getContext('2d');
+    if (popCtx) {
+        new Chart(popCtx, {
+            type: 'bar',
+            data: { labels: ['Fedora', 'Tote', 'Chrono', 'Mug'], datasets: [{ label: 'Sales', data: [42,38,27,19], backgroundColor: ['#c0392b','#e74c3c','#f1948a','#f5b7b1'] }] },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+    }
+}
+
+// ============================================
+// CATEGORIES
+// ============================================
+function renderCategories() {
+    const tbody = document.getElementById('categoryTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    categories.forEach(cat => {
+        const count = products.filter(p => p.category === cat.name).length;
+        tbody.innerHTML += `<tr><td>${cat.name}</td><td>${cat.slug}</td><td>${count}</td><td><button class="btn-sm" style="font-size:0.7rem;background:#fcd9d9;border:none;padding:0.2rem 0.8rem;border-radius:40px;cursor:pointer;" onclick="deleteCategory('${cat.id}')">Delete</button></td></tr>`;
+    });
+    populateCategoryFilter();
+    populateCategorySelects();
+}
+
+function populateCategoryFilter() {
+    const sel = document.getElementById('filterCategory');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">All Categories</option>';
+    categories.forEach(c => { const opt = document.createElement('option'); opt.value = c.name; opt.textContent = c.name; sel.appendChild(opt); });
+}
+
+function populateCategorySelects() {
+    document.querySelectorAll('#pCategory').forEach(sel => {
+        if (!sel) return;
+        const current = sel.value;
+        sel.innerHTML = '<option value="">Select Category</option>';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.name;
+            opt.textContent = cat.name;
+            sel.appendChild(opt);
+        });
+        if (current) sel.value = current;
+    });
+}
+
+function openCategoryModal() {
+    document.getElementById('categoryModalTitle').textContent = 'Add Category';
+    document.getElementById('catName').value = '';
+    document.getElementById('catSlug').value = '';
+    document.getElementById('categoryModal').classList.add('show');
+}
+
+function saveCategory() {
+    const name = document.getElementById('catName').value.trim();
+    const slug = document.getElementById('catSlug').value.trim() || name.toLowerCase().replace(/\s+/g, '-');
+    if (!name) { showToast('❌ Please enter category name'); return; }
+    categories.push({ id: 'cat' + Date.now(), name, slug });
+    showToast('✅ Category added');
+    renderCategories();
+    document.getElementById('categoryModal').classList.remove('show');
+}
+
+function deleteCategory(id) {
+    if (confirm('Delete this category?')) {
+        categories = categories.filter(c => c.id !== id);
+        renderCategories();
+        showToast('🗑️ Category deleted');
+    }
+}
+
+// ============================================
+// PRODUCTS
+// ============================================
+function handleMediaUpload(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+    const preview = document.getElementById('mediaPreview');
+    let imageCount = 0, videoCount = 0;
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const dataUrl = e.target.result;
+            productMedia.push(dataUrl);
+            const div = document.createElement('div');
+            div.className = 'media-item';
+            const index = productMedia.length - 1;
+            if (file.type.startsWith('video/')) {
+                videoCount++;
+                div.innerHTML = `<video src="${dataUrl}" muted></video><button class="remove-media" onclick="removeMedia(${index})">×</button>`;
+            } else {
+                imageCount++;
+                div.innerHTML = `<img src="${dataUrl}" alt="Product media" /><button class="remove-media" onclick="removeMedia(${index})">×</button>`;
+            }
+            preview.appendChild(div);
+            document.getElementById('mediaCount').textContent = `${productMedia.length} files selected (${imageCount} images, ${videoCount} videos)`;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function removeMedia(index) {
+    productMedia.splice(index, 1);
+    renderMediaPreview();
+}
+
+function renderMediaPreview() {
+    const preview = document.getElementById('mediaPreview');
+    preview.innerHTML = '';
+    let imageCount = 0, videoCount = 0;
+    productMedia.forEach((dataUrl, i) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        if (dataUrl.startsWith('data:video')) {
+            videoCount++;
+            div.innerHTML = `<video src="${dataUrl}" muted></video><button class="remove-media" onclick="removeMedia(${i})">×</button>`;
+        } else {
+            imageCount++;
+            div.innerHTML = `<img src="${dataUrl}" alt="Product media" /><button class="remove-media" onclick="removeMedia(${i})">×</button>`;
+        }
+        preview.appendChild(div);
+    });
+    document.getElementById('mediaCount').textContent = `${productMedia.length} files selected (${imageCount} images, ${videoCount} videos)`;
+}
+
+function renderProducts(filtered = null) {
+    const grid = document.getElementById('productGrid');
+    if (!grid) return;
+    const productsToShow = filtered || products;
+    grid.innerHTML = '';
+    productsToShow.forEach(p => {
+        const stockAlert = p.stock <= 3 ? `<div class="stock-alert">⚠️ Only ${p.stock} left!</div>` : '';
+        const oldPrice = p.oldPrice ? `<span class="old-price">₹${p.oldPrice}</span>` : '';
+        const offerPrice = p.offerPrice ? `<span class="offer-tag">₹${p.offerPrice}</span>` : '';
+        const displayPrice = p.offerPrice || p.price;
+        const isWishlisted = wishlist.includes(p.id);
+        let sizeChipsHtml = '';
+        if (p.sizes && p.sizes.length > 0) {
+            sizeChipsHtml = `<div class="size-selector-small" id="sizeSelector_${p.id}">`;
+            p.sizes.forEach(size => {
+                const inStock = p.stock > 0;
+                const isSelected = selectedProductSizes[p.id] === size;
+                sizeChipsHtml += `<span class="size-chip ${isSelected ? 'selected' : ''} ${!inStock ? 'out-of-stock' : ''}" data-product="${p.id}" data-size="${size}" onclick="selectProductSize(${p.id}, '${size}')">${size}</span>`;
+            });
+            sizeChipsHtml += `</div>`;
+            sizeChipsHtml += `<div class="selected-size-label" id="sizeLabel_${p.id}">${selectedProductSizes[p.id] ? 'Selected: ' + selectedProductSizes[p.id] : 'Select a size'}</div>`;
+        }
+        let mediaHtml = '';
+        const allMedia = [...(p.images || []), ...(p.videos || [])];
+        if (allMedia.length > 0) {
+            const firstMedia = allMedia[0];
+            if (firstMedia.startsWith('data:video')) {
+                mediaHtml = `<video src="${firstMedia}" muted></video><span class="media-indicator">🎬</span>`;
+            } else {
+                mediaHtml = `<img src="${firstMedia}" alt="${p.name}" /><span class="media-indicator">📷</span>`;
+            }
+        } else {
+            mediaHtml = `<i class="fas fa-${p.image || 'cube'}" style="font-size:4rem;"></i>`;
+        }
+        const hasSelectedSize = !!selectedProductSizes[p.id];
+        const isOutOfStock = p.stock <= 0;
+        const addBtnDisabled = !hasSelectedSize || isOutOfStock;
+        grid.innerHTML += `
+            <div class="product-card-customer">
+                <div class="img">${mediaHtml}</div>
+                <h4>${p.name}</h4>
+                <div class="rating">${'★'.repeat(Math.floor(p.rating || 4))} (${p.rating || 4})</div>
+                <div class="price">₹${displayPrice} ${oldPrice} ${offerPrice}</div>
+                ${p.offerPrice ? `<div style="font-size:0.8rem;color:#c0392b;font-weight:600;">🔥 Save ₹${p.price - p.offerPrice}</div>` : ''}
+                ${sizeChipsHtml}
+                ${stockAlert}
+                <div style="display:flex; gap:0.3rem; margin-top:0.5rem; flex-wrap:wrap;">
+                    <button class="btn-sm primary" onclick="addToCartWithSize(${p.id})" ${addBtnDisabled ? 'disabled' : ''}>
+                        ${isOutOfStock ? 'Out of Stock' : (hasSelectedSize ? 'Add to Cart' : 'Select Size')}
+                    </button>
+                    <button class="btn-sm outline" onclick="toggleWishlistItem(${p.id})" style="padding:0.4rem 0.8rem;">
+                        <i class="fas fa-heart" style="color:${isWishlisted ? '#c0392b' : '#ccc'}"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    document.getElementById('productCount').textContent = productsToShow.length + ' products';
+}
+
+let selectedProductSizes = {};
+
+function selectProductSize(productId, size) {
+    if (selectedProductSizes[productId] === size) {
+        delete selectedProductSizes[productId];
+    } else {
+        selectedProductSizes[productId] = size;
+    }
+    const chips = document.querySelectorAll(`#sizeSelector_${productId} .size-chip`);
+    chips.forEach(chip => chip.classList.toggle('selected', chip.dataset.size === selectedProductSizes[productId]));
+    const label = document.getElementById(`sizeLabel_${productId}`);
+    if (label) label.textContent = selectedProductSizes[productId] ? 'Selected: ' + selectedProductSizes[productId] : 'Select a size';
+    const card = document.querySelector(`#sizeSelector_${productId}`)?.closest('.product-card-customer');
+    if (card) {
+        const btn = card.querySelector('.btn-sm.primary');
+        if (btn) {
+            const p = products.find(pr => pr.id === productId);
+            const isOutOfStock = p && p.stock <= 0;
+            const hasSelectedSize = !!selectedProductSizes[productId];
+            btn.disabled = !hasSelectedSize || isOutOfStock;
+            btn.textContent = isOutOfStock ? 'Out of Stock' : (hasSelectedSize ? 'Add to Cart' : 'Select Size');
+        }
+    }
+}
+
+function addToCartWithSize(productId) {
+    const p = products.find(pr => pr.id === productId);
+    if (!p) return;
+    const selectedSize = selectedProductSizes[productId];
+    if (!selectedSize) { showToast('❌ Please select a size first'); return; }
+    if (p.stock <= 0) { showToast('❌ This product is out of stock'); return; }
+    const displayPrice = p.offerPrice || p.price;
+    const existing = cart.find(c => c.id === productId && c.selectedSize === selectedSize);
+    if (existing) { existing.qty++; } else { cart.push({ ...p, price: displayPrice, qty: 1, selectedSize: selectedSize }); }
+    updateCartUI();
+    showToast(`✅ ${p.name} (${selectedSize}) added to cart!`);
+}
+
+function renderRecommended() {
+    const grid = document.getElementById('recommendedGrid');
+    if (!grid) return;
+    const rec = products.filter(p => p.featured).slice(0, 4);
+    grid.innerHTML = '';
+    rec.forEach(p => {
+        const displayPrice = p.offerPrice || p.price;
+        let mediaHtml = '';
+        const allMedia = [...(p.images || []), ...(p.videos || [])];
+        if (allMedia.length > 0) {
+            const firstMedia = allMedia[0];
+            mediaHtml = firstMedia.startsWith('data:video') ? `<video src="${firstMedia}" muted></video>` : `<img src="${firstMedia}" alt="${p.name}" />`;
+        } else {
+            mediaHtml = `<i class="fas fa-${p.image || 'cube'}" style="font-size:4rem;"></i>`;
+        }
+        grid.innerHTML += `
+            <div class="product-card-customer">
+                <div class="img">${mediaHtml}</div>
+                <h4>${p.name}</h4>
+                <div class="price">₹${displayPrice}</div>
+                <button class="btn-sm primary" onclick="addToCart(${p.id})">Add to Cart</button>
+            </div>
+        `;
+    });
+}
+
+function renderAdminProducts() {
+    const tbody = document.getElementById('productTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    products.forEach(p => {
+        const sizes = (p.sizes || ['One Size']).map(s => `<span class="badge size-badge">${s}</span>`).join('');
+        const offerDisplay = p.offerPrice ? `<span style="color:#c0392b;">₹${p.offerPrice}</span>` : '—';
+        const hasMedia = (p.images && p.images.length > 0) || (p.videos && p.videos.length > 0);
+        const mediaCount = (p.images?.length || 0) + (p.videos?.length || 0);
+        tbody.innerHTML += `
+            <tr>
+                <td>${p.name}</td><td>${p.category}</td><td>₹${p.price}</td>
+                <td>${offerDisplay}</td>
+                <td><div style="display:flex;flex-wrap:wrap;gap:0.2rem;align-items:center;">${sizes}</div></td>
+                <td><span class="badge ${p.stock <= 3 ? 'danger' : p.stock <= 10 ? 'warning' : 'success'}">${p.stock} left</span></td>
+                <td>${hasMedia ? `<i class="fas fa-image" style="color:#c0392b;"></i> ${mediaCount}` : '—'}</td>
+                <td>
+                    <button class="btn-sm" style="font-size:0.7rem;background:#fcd9d9;border:none;padding:0.2rem 0.8rem;border-radius:40px;cursor:pointer;" onclick="deleteProduct(${p.id})">Delete</button>
+                    <button class="btn-sm primary" style="font-size:0.7rem;" onclick="editProduct(${p.id})">Edit</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function refreshStore() {
+    renderProducts();
+    renderRecommended();
+    renderAdminProducts();
+    renderCategories();
+    populateCategoryFilter();
+    renderAdminOrders();
+    updateDashboardStats();
+    updateFooter();
+}
+
+function deleteProduct(id) {
+    if (confirm('Delete this product?')) {
+        products = products.filter(p => p.id !== id);
+        refreshStore();
+        showToast('🗑️ Product deleted');
+    }
+}
+
+function editProduct(id) {
+    const p = products.find(pr => pr.id === id);
+    if (!p) return;
+    editingProductId = id;
+    document.getElementById('productModalTitle').textContent = 'Edit Product';
+    document.getElementById('pName').value = p.name;
+    document.getElementById('pCategory').value = p.category;
+    document.getElementById('pPrice').value = p.price;
+    document.getElementById('pOfferPrice').value = p.offerPrice || '';
+    document.getElementById('pStock').value = p.stock;
+    document.getElementById('pDescription').value = p.description || '';
+    selectedSizes = [...p.sizes];
+    document.querySelectorAll('.size-option').forEach(el => {
+        el.classList.toggle('selected', selectedSizes.includes(el.dataset.size));
+        el.style.setProperty('background', selectedSizes.includes(el.dataset.size) ? '#c0392b' : 'white');
+        el.style.setProperty('color', selectedSizes.includes(el.dataset.size) ? 'white' : '#2d1b0e');
+        el.style.setProperty('border-color', selectedSizes.includes(el.dataset.size) ? '#c0392b' : '#e8ddd5');
+    });
+    document.getElementById('selectedSizesDisplay').textContent = selectedSizes.length ? selectedSizes.join(', ') : 'None';
+    productMedia = [...(p.images || []), ...(p.videos || [])];
+    renderMediaPreview();
+    document.getElementById('productModal').classList.add('show');
+    populateCategorySelects();
+}
+
+function toggleSize(size) {
+    const idx = selectedSizes.indexOf(size);
+    const el = document.querySelector(`.size-option[data-size="${size}"]`);
+    if (idx > -1) { 
+        selectedSizes.splice(idx, 1); 
+        el?.classList.remove('selected');
+        el?.style.setProperty('background', 'white');
+        el?.style.setProperty('color', '#2d1b0e');
+        el?.style.setProperty('border-color', '#e8ddd5');
+    } else { 
+        selectedSizes.push(size); 
+        el?.classList.add('selected');
+        el?.style.setProperty('background', '#c0392b');
+        el?.style.setProperty('color', 'white');
+        el?.style.setProperty('border-color', '#c0392b');
+    }
+    document.getElementById('selectedSizesDisplay').textContent = selectedSizes.length ? selectedSizes.join(', ') : 'None';
+}
+
+function openProductModal() {
+    editingProductId = null;
+    document.getElementById('productModalTitle').textContent = 'Add Product';
+    ['pName','pPrice','pOfferPrice','pStock','pDescription'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('productModal').classList.add('show');
+    populateCategorySelects();
+    selectedSizes = [];
+    document.querySelectorAll('.size-option').forEach(el => {
+        el.classList.remove('selected');
+        el.style.setProperty('background', 'white');
+        el.style.setProperty('color', '#2d1b0e');
+        el.style.setProperty('border-color', '#e8ddd5');
+    });
+    document.getElementById('selectedSizesDisplay').textContent = 'None';
+    productMedia = [];
+    document.getElementById('mediaPreview').innerHTML = '';
+    document.getElementById('mediaCount').textContent = '0 files selected';
+    document.getElementById('pMedia').value = '';
+}
+
+function saveProduct() {
+    const name = document.getElementById('pName').value.trim();
+    const category = document.getElementById('pCategory').value;
+    const price = document.getElementById('pPrice').value;
+    const offerPrice = document.getElementById('pOfferPrice').value;
+    const stock = document.getElementById('pStock').value || 10;
+    const description = document.getElementById('pDescription').value.trim();
+    if (!name || !category || !price) { showToast('❌ Please fill name, category, and price'); return; }
+    const images = productMedia.filter(m => !m.startsWith('data:video'));
+    const videos = productMedia.filter(m => m.startsWith('data:video'));
+    const productData = {
+        name, category, price: parseInt(price), offerPrice: offerPrice ? parseInt(offerPrice) : null,
+        oldPrice: null, rating: 4, sizes: selectedSizes.length ? [...selectedSizes] : ['One Size'],
+        stock: parseInt(stock), image: images.length > 0 ? 'image' : 'cube', images, videos,
+        description: description || 'No description provided', featured: false, popular: false
+    };
+    if (editingProductId) {
+        const index = products.findIndex(p => p.id === editingProductId);
+        if (index > -1) { products[index] = { ...products[index], ...productData }; showToast('✅ Product updated!'); }
+    } else {
+        products.push({ id: Date.now(), ...productData });
+        showToast('✅ Product "' + name + '" added!');
+    }
+    refreshStore();
+    document.getElementById('productModal').classList.remove('show');
+}
+
+function bulkUpload() {
+    const newProducts = [
+        { name: 'Leather Belt', category: 'Accessories', price: 35, offerPrice: 28, sizes: ['M','L','XL'] },
+        { name: 'Silk Scarf', category: 'Apparel', price: 55, offerPrice: null, sizes: ['One Size'] },
+        { name: 'Cotton Gloves', category: 'Apparel', price: 15, offerPrice: null, sizes: ['S','M','L'] }
+    ];
+    newProducts.forEach((np, i) => {
+        products.push({
+            id: Date.now() + i,
+            name: np.name, category: np.category, price: np.price, offerPrice: np.offerPrice,
+            oldPrice: null, rating: 4, sizes: np.sizes, stock: 20, image: 'cube',
+            images: [], videos: [], description: 'Bulk uploaded product', featured: false, popular: false
+        });
+    });
+    refreshStore();
+    showToast('✅ Bulk upload complete! 3 products added.');
+}
+
+function exportProducts() {
+    let csv = 'Product,Category,Price,Offer Price,Sizes,Stock,Description\n';
+    products.forEach(p => {
+        csv += `"${p.name}","${p.category}","${p.price}","${p.offerPrice || ''}","${p.sizes.join('|')}","${p.stock}","${p.description || ''}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'kiwa_products.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📥 Products exported!');
+}
+
+// ============================================
+// SEARCH & FILTERS
+// ============================================
+function handleSearch(query) {
+    if (!query.trim()) { renderProducts(); return; }
+    const filtered = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()) || p.category.toLowerCase().includes(query.toLowerCase()));
+    renderProducts(filtered);
+}
+
+function applyFilters() {
+    let filtered = [...products];
+    const cat = document.getElementById('filterCategory').value;
+    const sort = document.getElementById('filterSort').value;
+    const size = document.getElementById('filterSize').value;
+    const min = parseFloat(document.getElementById('filterPriceMin').value) || 0;
+    const max = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
+    if (cat !== 'all') filtered = filtered.filter(p => p.category === cat);
+    if (size !== 'all') filtered = filtered.filter(p => p.sizes.includes(size));
+    filtered = filtered.filter(p => { const price = p.offerPrice || p.price; return price >= min && price <= max; });
+    if (sort === 'price-low') filtered.sort((a,b) => (a.offerPrice || a.price) - (b.offerPrice || b.price));
+    else if (sort === 'price-high') filtered.sort((a,b) => (b.offerPrice || b.price) - (a.offerPrice || a.price));
+    else if (sort === 'rating') filtered.sort((a,b) => b.rating - a.rating);
+    renderProducts(filtered);
+}
+
+function resetFilters() {
+    document.getElementById('filterCategory').value = 'all';
+    document.getElementById('filterSort').value = 'popular';
+    document.getElementById('filterSize').value = 'all';
+    document.getElementById('filterPriceMin').value = '';
+    document.getElementById('filterPriceMax').value = '';
+    renderProducts();
+}
+
+function filterByCategory(cat) {
+    document.getElementById('filterCategory').value = cat === 'All' ? 'all' : cat;
+    applyFilters();
+}
+
+// ============================================
+// CART
+// ============================================
+function addToCart(productId) {
+    const p = products.find(pr => pr.id === productId);
+    if (!p) return;
+    if (p.sizes && p.sizes.length > 0 && !p.sizes.includes('One Size')) {
+        showToast('❌ Please select a size from the product card');
+        return;
+    }
+    const displayPrice = p.offerPrice || p.price;
+    const existing = cart.find(c => c.id === productId && c.selectedSize === 'One Size');
+    if (existing) { existing.qty++; } else { cart.push({ ...p, price: displayPrice, qty: 1, selectedSize: 'One Size' }); }
+    updateCartUI();
+    showToast(`✅ ${p.name} added to cart!`);
+}
+
+function updateCartUI() {
+    const container = document.getElementById('cartItems');
+    const count = cart.reduce((sum, c) => sum + c.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    if (cart.length === 0) {
+        container.innerHTML = '<p style="color:#6b4f3e;">Your cart is empty</p>';
+        document.getElementById('cartSubtotal').textContent = '₹0';
+        document.getElementById('cartShipping').textContent = '₹0';
+        document.getElementById('cartTax').textContent = '₹0';
+        document.getElementById('cartTotal').textContent = '₹0';
+        return;
+    }
+    container.innerHTML = cart.map(c => `
+        <div class="cart-item">
+            <div><i class="fas fa-${c.image || 'cube'}" style="font-size:1.5rem;"></i></div>
+            <div style="flex:1;"><strong style="color:#2d1b0e;">${c.name}</strong> <span class="cart-size">${c.selectedSize || 'One Size'}</span><br>₹${c.price} × ${c.qty}</div>
+            <div class="qty">
+                <button onclick="updateQty(${c.id}, -1, '${c.selectedSize || 'One Size'}')">-</button>
+                <span>${c.qty}</span>
+                <button onclick="updateQty(${c.id}, 1, '${c.selectedSize || 'One Size'}')">+</button>
+            </div>
+            <button onclick="removeFromCart(${c.id}, '${c.selectedSize || 'One Size'}')" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:1.2rem;">&times;</button>
+        </div>
+    `).join('');
+    const subtotal = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+    const shipping = subtotal > 500 ? 0 : 40;
+    const tax = Math.round(subtotal * 0.05);
+    const total = subtotal + shipping + tax;
+    document.getElementById('cartSubtotal').textContent = `₹${subtotal}`;
+    document.getElementById('cartShipping').textContent = `₹${shipping}`;
+    document.getElementById('cartTax').textContent = `₹${tax}`;
+    document.getElementById('cartTotal').textContent = `₹${total}`;
+}
+
+function updateQty(productId, delta, size) {
+    const item = cart.find(c => c.id === productId && c.selectedSize === (size || 'One Size'));
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) { cart = cart.filter(c => !(c.id === productId && c.selectedSize === (size || 'One Size'))); }
+    updateCartUI();
+}
+
+function removeFromCart(productId, size) {
+    cart = cart.filter(c => !(c.id === productId && c.selectedSize === (size || 'One Size')));
+    updateCartUI();
+}
+
+function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); }
+
+// ============================================
+// WISHLIST
+// ============================================
+function toggleWishlistItem(productId) {
+    const idx = wishlist.indexOf(productId);
+    if (idx > -1) { wishlist.splice(idx, 1); showToast('Removed from wishlist'); }
+    else { wishlist.push(productId); showToast('❤️ Added to wishlist'); }
+    renderProducts();
+}
+
+function toggleWishlist() {
+    document.getElementById('accountModal').classList.add('show');
+    updateWishlistUI();
+}
+
+function updateWishlistUI() {
+    const container = document.getElementById('wishlistDisplay');
+    if (!container) return;
+    if (wishlist.length === 0) { container.innerHTML = '<p style="color:#6b4f3e;">No items in wishlist</p>'; return; }
+    container.innerHTML = wishlist.map(id => {
+        const p = products.find(pr => pr.id === id);
+        return p ? `<div style="display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid #f0e8e0;">${p.name} - ₹${p.offerPrice || p.price} <button class="btn-sm" onclick="toggleWishlistItem(${p.id})" style="background:#f0e8e0;border:none;padding:0.2rem 0.8rem;border-radius:40px;cursor:pointer;">Remove</button></div>` : '';
+    }).join('');
+}
+
+// ============================================
+// PAYMENT SELECTION
+// ============================================
+function selectPayment(method) {
+    selectedPayment = method;
+    document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+    document.querySelector(`.payment-option[data-value="${method}"]`)?.classList.add('selected');
+    const container = document.getElementById('paymentDetailsContainer');
+    const content = document.getElementById('paymentDetailsContent');
+    if (method === 'cod') { container.style.display = 'none'; return; }
+    container.style.display = 'block';
+    let html = '';
+    if (method === 'upi') {
+        html = `<h4 style="margin-bottom:0.5rem;color:#6c5ce7;">📱 UPI Payment</h4><div style="text-align:center;padding:0.5rem;"><div style="font-size:1.1rem;font-weight:600;color:#c0392b;padding:0.5rem;background:white;border-radius:12px;display:inline-block;"><i class="fas fa-qrcode"></i> ${paymentConfig.upi.upiId || 'kiwa@upi'}</div>${paymentConfig.upi.qrCode ? `<div style="margin-top:0.5rem;"><img src="${paymentConfig.upi.qrCode}" alt="UPI QR Code" style="max-width:200px;border-radius:12px;border:2px solid #f0e8e0;" /></div>` : '<p style="color:#6b4f3e;">QR code not configured. Please use UPI ID.</p>'}<p style="font-size:0.85rem;color:#6b4f3e;margin-top:0.5rem;">Scan QR code or use UPI ID to pay</p><p style="font-size:0.8rem;color:#c0392b;margin-top:0.3rem;">💡 After payment, enter the transaction ID below</p></div>`;
+    } else if (method === 'netbanking') {
+        html = `<h4 style="margin-bottom:0.5rem;color:#e17055;">🏦 Net Banking</h4><div style="background:white;border-radius:12px;padding:1rem;"><div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0e8e0;"><span><strong>Bank</strong></span><span>${paymentConfig.netbanking.bankName || 'HDFC Bank'}</span></div><div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0e8e0;"><span><strong>Account Holder</strong></span><span>${paymentConfig.netbanking.accountHolder || 'Kiwa E-Commerce Pvt Ltd'}</span></div><div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0e8e0;"><span><strong>Account Number</strong></span><span>${paymentConfig.netbanking.accountNo || '12345678901234'}</span></div><div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span><strong>IFSC Code</strong></span><span>${paymentConfig.netbanking.ifsc || 'HDFC0001234'}</span></div></div><p style="font-size:0.8rem;color:#c0392b;margin-top:0.5rem;">💡 After transferring, enter the transaction reference number below</p>`;
+    } else if (method === 'card') {
+        html = `<h4 style="margin-bottom:0.5rem;color:#0984e3;">💳 Card Payment</h4><div style="background:white;border-radius:12px;padding:1rem;"><p><strong>Gateway:</strong> ${paymentConfig.card.gateway || 'Razorpay'}</p><p style="font-size:0.85rem;color:#6b4f3e;">You will be redirected to secure payment page.</p><p style="font-size:0.8rem;color:#c0392b;margin-top:0.5rem;">💡 After payment, enter the transaction ID below</p></div>`;
+    }
+    content.innerHTML = html;
+    document.getElementById('paymentRefNumber').value = '';
+}
+
+// ============================================
+// PAYMENT CONFIGURATION (ADMIN)
+// ============================================
+function loadPaymentConfig() {
+    document.getElementById('configBankName').value = paymentConfig.netbanking.bankName || '';
+    document.getElementById('configAccountNo').value = paymentConfig.netbanking.accountNo || '';
+    document.getElementById('configIfsc').value = paymentConfig.netbanking.ifsc || '';
+    document.getElementById('configAccountHolder').value = paymentConfig.netbanking.accountHolder || '';
+    document.getElementById('configUpiId').value = paymentConfig.upi.upiId || '';
+    document.getElementById('configUpiQr').value = paymentConfig.upi.qrCode || '';
+    document.getElementById('configCardGateway').value = paymentConfig.card.gateway || '';
+    document.getElementById('configMerchantId').value = paymentConfig.card.merchantId || '';
+}
+
+function savePaymentConfig() {
+    paymentConfig.netbanking.bankName = document.getElementById('configBankName').value.trim();
+    paymentConfig.netbanking.accountNo = document.getElementById('configAccountNo').value.trim();
+    paymentConfig.netbanking.ifsc = document.getElementById('configIfsc').value.trim();
+    paymentConfig.netbanking.accountHolder = document.getElementById('configAccountHolder').value.trim();
+    paymentConfig.upi.upiId = document.getElementById('configUpiId').value.trim();
+    paymentConfig.upi.qrCode = document.getElementById('configUpiQr').value.trim();
+    paymentConfig.card.gateway = document.getElementById('configCardGateway').value.trim();
+    paymentConfig.card.merchantId = document.getElementById('configMerchantId').value.trim();
+    showToast('✅ Payment configuration saved successfully!');
+}
+
+// ============================================
+// CHECKOUT
+// ============================================
+function checkout() {
+    if (cart.length === 0) { showToast('❌ Your cart is empty'); return; }
+    document.getElementById('checkoutName').value = currentUser.name || '';
+    document.getElementById('checkoutEmail').value = currentUser.email || '';
+    document.getElementById('checkoutPhone').value = currentUser.phone || '';
+    if (currentUser.address) document.getElementById('checkoutAddress').value = currentUser.address;
+    selectPayment('cod');
+    updateCheckoutSummary();
+    document.getElementById('checkoutModal').classList.add('show');
+}
+
+function guestCheckout() {
+    if (!websiteSettings.toggles.guestCheckout) { showToast('❌ Guest checkout is disabled by admin'); return; }
+    if (cart.length === 0) { showToast('❌ Your cart is empty'); return; }
+    document.getElementById('checkoutName').value = '';
+    document.getElementById('checkoutEmail').value = '';
+    document.getElementById('checkoutPhone').value = '';
+    document.getElementById('checkoutPincode').value = '';
+    document.getElementById('checkoutAddress').value = '';
+    document.getElementById('checkoutCity').value = '';
+    document.getElementById('checkoutState').value = '';
+    selectPayment('cod');
+    updateCheckoutSummary();
+    document.getElementById('checkoutModal').classList.add('show');
+}
+
+function updateCheckoutSummary() {
+    const subtotal = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+    const shipping = subtotal > 500 ? 0 : 40;
+    const tax = Math.round(subtotal * 0.05);
+    const total = subtotal + shipping + tax;
+    document.getElementById('checkoutSubtotal').textContent = `₹${subtotal}`;
+    document.getElementById('checkoutShipping').textContent = `₹${shipping}`;
+    document.getElementById('checkoutTax').textContent = `₹${tax}`;
+    document.getElementById('checkoutGrandTotal').textContent = `₹${total}`;
+    document.getElementById('checkoutOrderItems').innerHTML = cart.map(c => 
+        `<div class="item"><span>${c.name} (${c.selectedSize || 'One Size'}) × ${c.qty}</span><span>₹${c.price * c.qty}</span></div>`
+    ).join('');
+}
+
+// ============================================
+// PLACE ORDER
+// ============================================
+function placeOrder() {
+    const name = document.getElementById('checkoutName').value.trim();
+    const email = document.getElementById('checkoutEmail').value.trim();
+    const phone = document.getElementById('checkoutPhone').value.trim();
+    const pincode = document.getElementById('checkoutPincode').value.trim();
+    const address = document.getElementById('checkoutAddress').value.trim();
+    const city = document.getElementById('checkoutCity').value.trim();
+    const state = document.getElementById('checkoutState').value.trim();
+    const refNumber = document.getElementById('paymentRefNumber').value.trim();
+    
+    if (!name || !email || !phone || !pincode || !address || !city || !state) {
+        showToast('❌ Please fill all required fields (*)');
+        return;
+    }
+    if (!/^\d{5,6}$/.test(pincode)) { showToast('❌ Please enter a valid pincode (5-6 digits)'); return; }
+    if (!/^[6-9]\d{9}$/.test(phone.replace(/\D/g, '').slice(-10))) { showToast('❌ Please enter a valid 10-digit mobile number'); return; }
+    if (selectedPayment !== 'cod') {
+        if (!refNumber) { showToast('❌ Please enter the payment reference number'); return; }
+        if (refNumber.length < 6) { showToast('❌ Please enter a valid reference number (at least 6 characters)'); return; }
+        if (!/^[a-zA-Z0-9]{6,}$/.test(refNumber.replace(/\s/g, ''))) { showToast('❌ Invalid reference number'); return; }
+    }
+    
+    const subtotal = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+    const shipping = subtotal > 500 ? 0 : 40;
+    const tax = Math.round(subtotal * 0.05);
+    const total = subtotal + shipping + tax;
+    const orderId = '#' + (1000 + Math.floor(Math.random() * 9000));
+    const paymentLabels = { 'cod': 'Cash on Delivery', 'upi': 'UPI', 'card': 'Credit/Debit Card', 'netbanking': 'Net Banking' };
+    const fullAddress = `${address}, ${city}, ${state} - ${pincode}`;
+    const paymentMethod = paymentLabels[selectedPayment] || selectedPayment;
+    const paymentRef = selectedPayment === 'cod' ? 'N/A' : refNumber;
+    const itemsList = cart.map(c => `${c.name} (${c.selectedSize || 'One Size'})`).join(', ');
+    
+    orders.unshift({
+        id: orderId, customer: name, email: email, phone: phone, address: fullAddress,
+        items: itemsList, cartItems: cart.map(c => ({ ...c })), total: total,
+        status: selectedPayment === 'cod' ? 'Processing' : 'Payment Verified',
+        date: new Date().toISOString().slice(0,10),
+        tracking: selectedPayment === 'cod' ? ['Order Placed', 'Processing'] : ['Order Placed', 'Payment Verified', 'Processing'],
+        payment: paymentMethod, pincode: pincode, city: city, state: state,
+        refNumber: paymentRef, verified: selectedPayment !== 'cod',
+        edd: getEstimatedDeliveryDate(), otpVerified: false, otpSent: false,
+        assignedTo: null, courierPartner: null
+    });
+    
+    showToast(`✅ Order ${orderId} placed! Payment: ${paymentMethod} ${selectedPayment !== 'cod' ? '✓ Verified' : ''}`);
+    sendOrderNotification(orderId);
+    currentUser.name = name; currentUser.email = email; currentUser.phone = phone; currentUser.address = fullAddress;
+    cart = []; selectedProductSizes = {}; updateCartUI();
+    document.getElementById('checkoutModal').classList.remove('show');
+    document.getElementById('cartSidebar').classList.remove('open');
+    refreshStore();
+    renderAdminOrders();
+    updateDashboardStats();
+    renderAssignedOrders();
+}
+
+// ============================================
+// DELIVERY FEATURES
+// ============================================
+function checkPincode() {
+    const pincode = document.getElementById('pincodeInput').value.trim();
+    if (!pincode || pincode.length < 5) {
+        document.getElementById('pincodeResult').innerHTML = '<span style="color:#c0392b;">⚠️ Please enter a valid pincode</span>';
+        return;
+    }
+    const isServiceable = serviceablePincodes.includes(pincode);
+    document.getElementById('pincodeResult').innerHTML = isServiceable ?
+        `<span class="available">✅ Delivery available at ${pincode}</span><div style="font-size:0.8rem;color:#6b4f3e;margin-top:0.2rem;">📦 Estimated delivery: 2-4 business days</div>` :
+        `<span class="unavailable">❌ Delivery not available at ${pincode}</span><div style="font-size:0.8rem;color:#6b4f3e;margin-top:0.2rem;">We currently don't deliver to this location</div>`;
+}
+
+function getEstimatedDeliveryDate() {
+    const today = new Date();
+    let daysToAdd = 3 + Math.floor(Math.random() * 3);
+    let deliveryDate = new Date(today);
+    let daysAdded = 0;
+    while (daysAdded < daysToAdd) {
+        deliveryDate.setDate(deliveryDate.getDate() + 1);
+        if (deliveryDate.getDay() !== 0 && deliveryDate.getDay() !== 6) daysAdded++;
+    }
+    return deliveryDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function getEDD() {
+    const orderInput = document.getElementById('eddOrderInput').value.trim();
+    const resultDiv = document.getElementById('eddResult');
+    if (!orderInput) { resultDiv.innerHTML = '<span style="color:#c0392b;">⚠️ Please enter an order ID</span>'; return; }
+    const order = orders.find(o => o.id === orderInput);
+    if (!order) { resultDiv.innerHTML = '<span style="color:#c0392b;">❌ Order not found</span>'; return; }
+    if (!order.edd) order.edd = getEstimatedDeliveryDate();
+    const statusMap = { 'Processing': '📦 Being processed', 'Payment Verified': '✅ Payment verified', 'In Transit': '🚚 On the way', 'Delivered': '✅ Delivered' };
+    resultDiv.innerHTML = `<div style="background:#f5ece4;border-radius:12px;padding:0.8rem 1rem;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;"><span><strong>Order:</strong> ${order.id}</span><span><strong>Status:</strong> ${statusMap[order.status] || order.status}</span></div><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem;"><span><strong>📅 Estimated Delivery:</strong> <span style="color:#c0392b;font-weight:600;">${order.edd}</span></span><span><strong>📍</strong> ${order.pincode || 'N/A'}</span></div></div>`;
+}
+
+function trackOrder() {
+    const orderInput = document.getElementById('trackOrderInput').value.trim();
+    const resultDiv = document.getElementById('trackingResult');
+    if (!orderInput) { resultDiv.innerHTML = '<span style="color:#c0392b;">⚠️ Please enter an order ID</span>'; return; }
+    const order = orders.find(o => o.id === orderInput);
+    if (!order) { resultDiv.innerHTML = '<span style="color:#c0392b;">❌ Order not found</span>'; return; }
+    const trackingSteps = order.tracking || ['Order Placed'];
+    const currentStatus = order.status;
+    let timelineHtml = '<div class="tracking-timeline">';
+    const allSteps = ['Order Placed', 'Payment Verified', 'Processing', 'In Transit', 'Out for Delivery', 'Delivered'];
+    const completedSteps = trackingSteps;
+    allSteps.forEach((step) => {
+        const isCompleted = completedSteps.includes(step);
+        const isCurrent = step === currentStatus;
+        timelineHtml += `<div class="step ${(isCompleted || currentStatus === 'Delivered' && step === 'Delivered') ? 'completed' : ''}"><div class="step-label">${step} ${isCurrent ? '⬅️' : ''}</div><div class="step-time">${isCompleted ? '✓ Completed' : (isCurrent ? 'In Progress...' : 'Pending')}</div></div>`;
+    });
+    timelineHtml += '</div>';
+    const locations = ['Warehouse', 'Sorting Center', 'Transit Hub', 'Local Hub', 'Out for Delivery'];
+    const currentLocation = locations[Math.min(completedSteps.length - 1, locations.length - 1)] || 'Warehouse';
+    resultDiv.innerHTML = `<div style="background:#f5ece4;border-radius:12px;padding:1rem;"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.5rem;"><span><strong>📦 Order:</strong> ${order.id}</span><span><strong>Status:</strong> <span class="badge ${order.status === 'Delivered' ? 'success' : 'warning'}">${order.status}</span></span></div><div style="font-size:0.85rem;color:#6b4f3e;margin-bottom:0.5rem;"><i class="fas fa-map-marker-alt" style="color:#c0392b;"></i> Current Location: <strong>${currentLocation}</strong></div>${timelineHtml}${order.status === 'Delivered' ? '<div style="color:#28a745;font-weight:600;margin-top:0.5rem;">✅ Order delivered successfully!</div>' : ''}</div>`;
+}
+
+function sendNotification() {
+    const orderInput = document.getElementById('notifyOrderInput').value.trim();
+    if (!orderInput) { showToast('⚠️ Please enter an order ID'); return; }
+    const order = orders.find(o => o.id === orderInput);
+    if (!order) { showToast('❌ Order not found'); return; }
+    const message = `Kiwa: Order ${order.id} status update - ${order.status}. EDD: ${order.edd || 'Calculating...'}. Thank you for shopping with Kiwa!`;
+    if (smsConfig.apiKey) { sendSMSViaAPI(order.phone || '9876543210', message); } else { showToast(`📱 DEMO: SMS sent to ${order.phone || '9876543210'}`); }
+    order.notificationSent = true;
+    order.notificationTime = new Date().toLocaleTimeString();
+    renderDeliveryLogs();
+    showToast('✅ Notification sent!');
+}
+
+function sendDeliveryOTP() {
+    const orderInput = document.getElementById('notifyOrderInput').value.trim();
+    if (!orderInput) { showToast('⚠️ Please enter an order ID'); return; }
+    const order = orders.find(o => o.id === orderInput);
+    if (!order) { showToast('❌ Order not found'); return; }
+    if (order.status === 'Delivered') { showToast('✅ This order is already delivered!'); return; }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    deliveryOTPStorage.code = otp;
+    deliveryOTPStorage.verified = false;
+    deliveryOTPStorage.expiry = Date.now() + 300000;
+    order.otpSent = true;
+    order.otpCode = otp;
+    const otpMessage = `Kiwa: Your delivery OTP for order ${order.id} is: ${otp}. Valid for 5 minutes.`;
+    if (smsConfig.apiKey) { sendSMSViaAPI(order.phone || '9876543210', otpMessage); } else { showToast(`📱 DEMO: OTP ${otp} sent to ${order.phone}`); }
+    document.getElementById('deliveryOtpStatus').innerHTML = `<span style="color:#f39c12;">🔑 OTP sent! Please check your SMS.</span><span style="font-size:0.7rem;color:#6b4f3e;display:block;">OTP: ${otp} (demo)</span>`;
+    showToast(`✅ OTP sent for order ${order.id}`);
+}
+
+function verifyDeliveryOTP() {
+    const enteredOtp = document.getElementById('deliveryOtpInput').value.trim();
+    const statusDiv = document.getElementById('deliveryOtpStatus');
+    if (!enteredOtp || enteredOtp.length < 6) { statusDiv.innerHTML = '<span style="color:#c0392b;">⚠️ Please enter a valid 6-digit OTP</span>'; return; }
+    if (!deliveryOTPStorage.code) { statusDiv.innerHTML = '<span style="color:#c0392b;">⚠️ No OTP sent. Please request a new OTP.</span>'; return; }
+    if (Date.now() > deliveryOTPStorage.expiry) { statusDiv.innerHTML = '<span style="color:#c0392b;">⏰ OTP expired. Please request a new OTP.</span>'; deliveryOTPStorage.code = null; return; }
+    if (enteredOtp === deliveryOTPStorage.code) {
+        deliveryOTPStorage.verified = true;
+        statusDiv.innerHTML = '<span class="verified">✅ OTP verified successfully! Delivery confirmed.</span>';
+        const orderInput = document.getElementById('notifyOrderInput').value.trim();
+        const order = orders.find(o => o.id === orderInput);
+        if (order) { order.otpVerified = true; order.otpVerifiedTime = new Date().toLocaleTimeString(); showToast(`✅ Delivery verified for order ${order.id}!`); renderDeliveryLogs(); }
+    } else {
+        statusDiv.innerHTML = '<span style="color:#c0392b;">❌ Invalid OTP. Please try again.</span>';
+    }
+}
+
+function sendOrderNotification(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
+    const message = `🎉 Kiwa: Your order ${order.id} has been placed successfully! EDD: ${order.edd || 'Calculating...'}. We'll keep you updated.`;
+    if (smsConfig.apiKey) { sendSMSViaAPI(order.phone || '9876543210', message); }
+    order.notificationSent = true;
+    order.notificationTime = new Date().toLocaleTimeString();
+}
+
+function sendSMSViaAPI(phoneNumber, message) {
+    const apiKey = smsConfig.apiKey;
+    const senderId = smsConfig.senderId || 'KIWAOTP';
+    if (!apiKey) { console.log(`📱 DEMO SMS: ${message}`); return; }
+    const provider = smsConfig.provider || 'textlocal';
+    let apiUrl = '', params = {};
+    switch(provider) {
+        case 'textlocal': apiUrl = 'https://api.textlocal.in/send/'; params = { apikey: apiKey, numbers: phoneNumber, sender: senderId, message: message }; break;
+        case 'fast2sms': apiUrl = 'https://www.fast2sms.com/dev/bulkV2'; params = { authorization: apiKey, route: 'otp', variables_values: message, flash: 0, numbers: phoneNumber }; break;
+        case 'msg91': apiUrl = 'https://api.msg91.com/api/v5/flow/'; params = { authkey: apiKey, mobiles: phoneNumber, sender: senderId, message: message }; break;
+        default: return;
+    }
+    const queryString = Object.keys(params).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key])).join('&');
+    fetch(apiUrl + '?' + queryString, { method: 'GET', headers: { 'Content-Type': 'application/json' } })
+        .then(response => response.json())
+        .then(data => { if (data.status === 'success' || data.return === true || data.type === 'success') { console.log('SMS sent successfully'); } })
+        .catch(error => console.error('SMS Error:', error));
+}
+
+// ============================================
+// ADMIN ORDERS
+// ============================================
+function renderAdminOrders() {
+    const tbody = document.getElementById('orderTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (orders.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#6b4f3e;">No orders yet</td></tr>`; return; }
+    orders.forEach(o => {
+        const statusClass = o.status === 'Delivered' ? 'success' : o.status === 'Payment Verified' ? 'success' : 'warning';
+        tbody.innerHTML += `<tr><td>${o.id}</td><td>${o.customer}</td><td>₹${o.total}</td><td><span class="badge ${statusClass}">${o.status}</span></td><td><span class="badge">${o.payment}</span></td><td><button class="btn-sm" onclick="viewOrderDetails('${o.id}')" style="font-size:0.7rem;">Details</button><button class="btn-sm primary" onclick="viewInvoice('${o.id}')" style="font-size:0.7rem;">Invoice</button>${o.assignedTo ? `<span class="badge info" style="font-size:0.6rem;">🚚 ${o.assignedTo}</span>` : ''}</td></tr>`;
+    });
+}
+
+function viewOrderDetails(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) { showToast('❌ Order not found'); return; }
+    let details = `📋 Order ${order.id}\nCustomer: ${order.customer}\nItems: ${order.items}\nTotal: ₹${order.total}\nPayment: ${order.payment}\nStatus: ${order.status}\n${order.assignedTo ? `Assigned: ${order.assignedTo}\n` : ''}${order.refNumber ? `Reference: ${order.refNumber}\n` : ''}${order.edd ? `📅 EDD: ${order.edd}\n` : ''}${order.otpVerified ? `🔐 OTP Verified: ${order.otpVerifiedTime || 'Yes'}\n` : ''}Address: ${order.address}`;
+    showToast(details, 5000);
+}
+
+function viewInvoice(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) { showToast('❌ Order not found'); return; }
+    document.getElementById('previewModalTitle').textContent = `Invoice ${order.id}`;
+    document.getElementById('previewContent').innerHTML = `
+        <h4>📄 KIWA INVOICE</h4>
+        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Invoice #</span><span>INV-${order.id.replace('#','')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Date</span><span>${order.date}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Order ID</span><span>${order.id}</span></div>
+        <div style="margin-top:0.8rem;border-top:2px solid #f0e8e0;padding-top:0.8rem;">
+            <strong>👤 Customer Details</strong>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Name</span><span>${order.customer}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Email</span><span>${order.email || 'N/A'}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;"><span>Phone</span><span>${order.phone || 'N/A'}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Payment</span><span>${order.payment} ${order.refNumber ? '| Ref: ' + order.refNumber : ''}</span></div>
+            ${order.verified ? `<div style="color:#c0392b;font-weight:600;">✓ Payment Verified</div>` : ''}
+            ${order.assignedTo ? `<div style="color:#28a745;font-weight:600;">🚚 Assigned to: ${order.assignedTo}</div>` : ''}
+        </div>
+        <div style="background:#f5ece4;padding:0.8rem;border-radius:12px;margin:0.5rem 0;">
+            <strong>📍 Delivery Address</strong><br>${order.address || 'No address provided'}<br><span style="font-size:0.8rem;color:#6b4f3e;">Pincode: ${order.pincode || 'N/A'}</span>${order.edd ? `<br><span style="font-size:0.8rem;color:#c0392b;">📅 EDD: ${order.edd}</span>` : ''}
+        </div>
+        <div style="margin-top:0.8rem;border-top:2px solid #f0e8e0;padding-top:0.8rem;">
+            <strong>📦 Order Items</strong>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Items</span><span>${order.items}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Total</span><span><strong>₹${order.total}</strong></span></div>
+        </div>
+        <div style="margin-top:1rem;text-align:center;color:#6b4f3e;font-size:0.8rem;border-top:2px solid #c0392b;padding-top:0.8rem;">Thank you for shopping at Kiwa! ❤️</div>
+    `;
+    document.getElementById('previewModal').classList.add('show');
+}
+
+function viewInvoicePrompt() { const id = prompt('Enter Order ID:'); if (id) viewInvoice(id); }
+function viewLabelPrompt() { const id = prompt('Enter Order ID:'); if (id) viewLabel(id); }
+
+function viewLabel(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) { showToast('❌ Order not found'); return; }
+    document.getElementById('previewModalTitle').textContent = `Shipping Label ${order.id}`;
+    document.getElementById('previewContent').innerHTML = `
+        <h4>🏷️ SHIPPING LABEL</h4>
+        <div style="border:2px solid #2d1b0e;border-radius:12px;padding:1.5rem;margin:0.5rem 0;">
+            <div style="text-align:center;font-size:1.2rem;font-weight:700;color:#c0392b;margin-bottom:1rem;">KIWA LOGISTICS</div>
+            <div style="border-top:1px dashed #e8ddd5;padding-top:0.8rem;">
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Order #</span><span><strong>${order.id}</strong></span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Date</span><span>${order.date}</span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Payment</span><span>${order.payment}</span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Status</span><span>${order.status}</span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>EDD</span><span>${order.edd || 'Calculating...'}</span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Tracking</span><span>TRK-${Date.now().toString().slice(-6)}</span></div>
+                ${order.assignedTo ? `<div style="color:#28a745;font-weight:600;">🚚 Assigned to: ${order.assignedTo}</div>` : ''}
+            </div>
+            <div style="margin-top:0.8rem;background:#faf6f1;padding:0.8rem;border-radius:8px;">
+                <strong>📦 Deliver To:</strong><br>
+                <div style="font-size:1rem;margin-top:0.3rem;"><strong>${order.customer}</strong><br>${order.address || 'No address provided'}<br>📞 ${order.phone || 'N/A'} · 📮 ${order.pincode || 'N/A'}</div>
+            </div>
+            <div style="margin-top:0.8rem;border-top:1px dashed #e8ddd5;padding-top:0.8rem;">
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Items</span><span>${order.items}</span></div>
+                <div style="display:flex;justify-content:space-between;padding:0.3rem 0;"><span>Total</span><span><strong>₹${order.total}</strong></span></div>
+            </div>
+            <div style="margin-top:0.8rem;text-align:center;font-size:0.8rem;color:#6b4f3e;border-top:2px solid #c0392b;padding-top:0.8rem;">📦 Handle with care · Thank you for choosing Kiwa</div>
+        </div>
+    `;
+    document.getElementById('previewModal').classList.add('show');
+}
+
+function downloadPreview() {
+    const content = document.getElementById('previewContent').innerText;
+    const title = document.getElementById('previewModalTitle').textContent;
+    const blob = new Blob([content], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = title.replace(/[^a-zA-Z0-9]/g, '_') + '.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📄 Downloaded successfully!');
+}
+
+function printPreview() {
+    const content = document.getElementById('previewContent').innerHTML;
+    const win = window.open('', '_blank');
+    win.document.write(`<html><head><title>Print</title><style>body{font-family:Inter,sans-serif;padding:2rem;max-width:700px;margin:auto;}.row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px dashed #f0e8e0;}h4{color:#c0392b;margin-bottom:1rem;font-size:1.2rem;}</style></head><body>${content}<script>window.onload=function(){window.print();}<\/script></body></html>`);
+    win.document.close();
+}
+
+// ============================================
+// ACCOUNT
+// ============================================
+function toggleAccountPanel() {
+    document.getElementById('accountModal').classList.add('show');
+    document.getElementById('accountName').value = currentUser.name || '';
+    document.getElementById('accountEmail').value = currentUser.email || '';
+    document.getElementById('accountPhone').value = currentUser.phone || '';
+    document.getElementById('accountAddress').value = currentUser.address || '';
+    const container = document.getElementById('orderHistory');
+    if (container) {
+        if (orders.length === 0) { container.innerHTML = '<p style="color:#6b4f3e;">No orders yet</p>'; } else {
+            container.innerHTML = orders.map(o => `<div style="background:#faf6f1;border-radius:12px;padding:0.8rem 1rem;margin:0.4rem 0;border-left:4px solid #c0392b;"><div><strong>${o.id}</strong> - ${o.date}</div><div>${o.items}</div><div>Total: ₹${o.total}</div><div>Payment: ${o.payment} ${o.refNumber ? '| Ref: ' + o.refNumber : ''}</div><div>Status: <span class="badge ${o.status === 'Delivered' ? 'success' : 'warning'}">${o.status}</span></div>${o.assignedTo ? `<div style="font-size:0.8rem;color:#28a745;">🚚 Assigned: ${o.assignedTo}</div>` : ''}${o.edd ? `<div style="font-size:0.8rem;color:#6b4f3e;">📅 EDD: ${o.edd}</div>` : ''}</div>`).join('');
+        }
+    }
+    updateWishlistUI();
+}
+
+function saveAccount() {
+    currentUser.name = document.getElementById('accountName').value;
+    currentUser.email = document.getElementById('accountEmail').value;
+    currentUser.phone = document.getElementById('accountPhone').value;
+    currentUser.address = document.getElementById('accountAddress').value;
+    showToast('✅ Profile updated!');
+    document.getElementById('accountModal').classList.remove('show');
+}
+
+// ============================================
+// DELIVERY PANEL
+// ============================================
+function toggleDeliveryStatus() {
+    isDeliveryOnline = !isDeliveryOnline;
+    const badge = document.getElementById('deliveryStatusBadge');
+    const btn = document.getElementById('deliveryStatusBtn');
+    if (isDeliveryOnline) {
+        badge.textContent = '● Online';
+        badge.className = 'badge success';
+        btn.textContent = 'Go Offline';
+        showToast('✅ You are now Online');
+    } else {
+        badge.textContent = '● Offline';
+        badge.className = 'badge danger';
+        btn.textContent = 'Go Online';
+        showToast('⏸️ You are now Offline');
+    }
+}
+
+function renderDeliveryOrders() {
+    const tbody = document.getElementById('deliveryOrderTable');
+    if (!tbody) return;
+    const deliveryOrders = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Payment Verified').slice(0, 10);
+    if (deliveryOrders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#6b4f3e;">No pending deliveries</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = deliveryOrders.map(o => `
+        <tr>
+            <td>${o.id}</td>
+            <td>${o.customer}</td>
+            <td style="font-size:0.8rem;color:#6b4f3e;">${o.address ? o.address.substring(0, 30) + '...' : 'N/A'}</td>
+            <td><span class="badge ${o.status === 'Delivered' ? 'success' : 'warning'}">${o.status}</span></td>
+            <td>
+                ${o.status !== 'Delivered' ? `<button class="btn-sm" onclick="updateDeliveryStatus('${o.id}')">${o.status === 'In Transit' ? 'Deliver' : 'Start Delivery'}</button>` : '<span style="color:#28a745;">✓ Completed</span>'}
+                ${o.assignedTo ? `<span style="font-size:0.6rem;color:#28a745;">🚚 ${o.assignedTo}</span>` : ''}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function updateDeliveryStatus(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) { showToast('❌ Order not found'); return; }
+    if (order.status === 'In Transit' && !order.otpVerified) {
+        showToast('⚠️ Please verify delivery OTP before completing delivery');
+        return;
+    }
+    const newStatus = order.status === 'In Transit' ? 'Delivered' : order.status === 'Payment Verified' ? 'In Transit' : 'In Transit';
+    order.status = newStatus;
+    if (newStatus === 'In Transit') { order.tracking.push('In Transit'); sendOrderStatusNotification(order.id); }
+    else if (newStatus === 'Delivered') { order.tracking.push('Delivered'); sendOrderStatusNotification(order.id); }
+    renderDeliveryOrders();
+    renderDeliveryLogs();
+    updateDeliveryStats();
+    renderAdminOrders();
+    updateDashboardStats();
+    renderAssignedOrders();
+    showToast(`✅ Order ${orderId} updated to ${newStatus}`);
+}
+
+function sendOrderStatusNotification(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
+    const message = `Kiwa: Order ${order.id} status updated to ${order.status}. EDD: ${order.edd || 'Calculating...'}. Track your order on Kiwa.`;
+    if (smsConfig.apiKey) sendSMSViaAPI(order.phone || '9876543210', message);
+}
+
+function renderDeliveryLogs() {
+    const container = document.getElementById('deliveryLogContainer');
+    if (!container) return;
+    const logs = orders.filter(o => o.status !== 'Delivered').slice(0, 10);
+    if (logs.length === 0) { container.innerHTML = '<p style="color:#6b4f3e;padding:1rem;">No active deliveries</p>'; return; }
+    container.innerHTML = logs.map(o => `
+        <div class="delivery-log-item">
+            <div><strong>Order ${o.id}</strong> - ${o.customer}</div>
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+                <span>📍 ${o.address ? o.address.substring(0, 40) + '...' : 'N/A'}</span>
+                <span class="badge ${o.status === 'Delivered' ? 'success' : 'warning'}">${o.status}</span>
+                <span style="font-size:0.8rem;color:#6b4f3e;">${o.date}</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;font-size:0.75rem;color:#6b4f3e;margin-top:0.2rem;">
+                ${o.edd ? `<span>📅 EDD: ${o.edd}</span>` : ''}
+                ${o.assignedTo ? `<span style="color:#28a745;">🚚 ${o.assignedTo}</span>` : ''}
+                ${o.otpVerified ? `<span style="color:#28a745;">🔐 OTP ✓</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateDeliveryStats() {
+    const assigned = orders.filter(o => o.status === 'Processing' || o.status === 'Payment Verified').length;
+    const transit = orders.filter(o => o.status === 'In Transit').length;
+    const delivered = orders.filter(o => o.status === 'Delivered').length;
+    const pending = orders.filter(o => o.status !== 'Delivered' && o.status !== 'In Transit').length;
+    document.getElementById('deliveryAssigned').textContent = assigned || 0;
+    document.getElementById('deliveryTransit').textContent = transit || 0;
+    document.getElementById('deliveryDelivered').textContent = delivered || 0;
+    document.getElementById('deliveryPending').textContent = pending || 0;
+}
+
+// ============================================
+// DELIVERY LOGISTICS ADMIN
+// ============================================
+function renderDeliveryPartnersAdmin() {
+    const container = document.getElementById('deliveryPartnerList');
+    if (!container) return;
+    if (deliveryPartners.length === 0) {
+        container.innerHTML = '<p style="color:#6b4f3e;">No delivery partners added</p>';
+        return;
+    }
+    container.innerHTML = deliveryPartners.map(name => `
+        <div class="delivery-app-card">
+            <div><strong>${name}</strong></div>
+            <div><span class="badge success">Online</span></div>
+            <div><button class="btn-sm danger" style="font-size:0.7rem;background:#fcd9d9;border:none;padding:0.2rem 0.8rem;border-radius:40px;cursor:pointer;" onclick="removeDeliveryPartner('${name}')">Remove</button></div>
+        </div>
+    `).join('');
+}
+
+function removeDeliveryPartner(name) {
+    if (confirm(`Remove ${name}?`)) {
+        deliveryPartners = deliveryPartners.filter(p => p !== name);
+        renderDeliveryPartnersAdmin();
+        showToast('✅ Partner removed');
+    }
+}
+
+function openDeliveryPartnerModal() {
+    document.getElementById('deliveryPartnerModalTitle').textContent = 'Add Delivery Partner';
+    document.getElementById('dpName').value = '';
+    document.getElementById('dpEmail').value = '';
+    document.getElementById('dpPhone').value = '';
+    document.getElementById('deliveryPartnerModal').classList.add('show');
+}
+
+function saveDeliveryPartner() {
+    const name = document.getElementById('dpName').value.trim();
+    if (!name) { showToast('❌ Please enter name'); return; }
+    deliveryPartners.push(name);
+    showToast(`✅ Delivery partner "${name}" added!`);
+    document.getElementById('deliveryPartnerModal').classList.remove('show');
+    renderDeliveryPartnersAdmin();
+}
+
+// ============================================
+// ASSIGN ORDERS
+// ============================================
+function openAssignOrderModal() {
+    const orderSelect = document.getElementById('assignOrderSelect');
+    const partnerSelect = document.getElementById('assignPartnerSelect');
+    
+    orderSelect.innerHTML = '<option value="">Select Order</option>';
+    const unassignedOrders = orders.filter(o => !o.assignedTo && o.status !== 'Delivered');
+    if (unassignedOrders.length === 0) {
+        orderSelect.innerHTML += '<option value="">No unassigned orders</option>';
+        showToast('⚠️ No unassigned orders available');
+        return;
+    }
+    unassignedOrders.forEach(o => {
+        orderSelect.innerHTML += `<option value="${o.id}">${o.id} - ${o.customer} (₹${o.total})</option>`;
+    });
+    
+    partnerSelect.innerHTML = '<option value="">Select Partner</option>';
+    deliveryPartners.forEach(p => {
+        partnerSelect.innerHTML += `<option value="${p}">${p}</option>`;
+    });
+    
+    document.getElementById('assignOrderModal').classList.add('show');
+}
+
+function confirmAssignOrder() {
+    const orderId = document.getElementById('assignOrderSelect').value;
+    const partner = document.getElementById('assignPartnerSelect').value;
+    
+    if (!orderId) { showToast('❌ Please select an order'); return; }
+    if (!partner) { showToast('❌ Please select a delivery partner'); return; }
+    
+    const order = orders.find(o => o.id === orderId);
+    if (!order) { showToast('❌ Order not found'); return; }
+    
+    order.assignedTo = partner;
+    order.status = 'In Transit';
+    order.tracking.push('Assigned to ' + partner);
+    order.tracking.push('In Transit');
+    
+    showToast(`✅ Order ${orderId} assigned to ${partner}`);
+    document.getElementById('assignOrderModal').classList.remove('show');
+    renderAssignedOrders();
+    renderAdminOrders();
+    renderDeliveryOrders();
+    renderDeliveryLogs();
+    updateDeliveryStats();
+}
+
+function renderAssignedOrders() {
+    const container = document.getElementById('assignedOrdersList');
+    if (!container) return;
+    const assigned = orders.filter(o => o.assignedTo);
+    if (assigned.length === 0) {
+        container.innerHTML = '<p style="color:#6b4f3e;padding:0.5rem 0;">No orders assigned yet</p>';
+        return;
+    }
+    container.innerHTML = assigned.map(o => `
+        <div class="delivery-app-card">
+            <div><strong>${o.id}</strong> - ${o.customer}</div>
+            <div><span class="badge ${o.status === 'Delivered' ? 'success' : 'warning'}">${o.status}</span></div>
+            <div>🚚 ${o.assignedTo}</div>
+            <div><button class="btn-sm" style="font-size:0.7rem;" onclick="unassignOrder('${o.id}')">Unassign</button></div>
+        </div>
+    `).join('');
+}
+
+function unassignOrder(orderId) {
+    if (confirm('Unassign this order?')) {
+        const order = orders.find(o => o.id === orderId);
+        if (order) {
+            order.assignedTo = null;
+            order.status = 'Processing';
+            showToast(`✅ Order ${orderId} unassigned`);
+            renderAssignedOrders();
+            renderAdminOrders();
+            renderDeliveryOrders();
+            renderDeliveryLogs();
+            updateDeliveryStats();
+        }
+    }
+}
+
+// ============================================
+// DELIVERY SETTINGS
+// ============================================
+function renderDeliverySettings() {
+    // Render pincode list
+    const pincodeContainer = document.getElementById('pincodeList');
+    if (pincodeContainer) {
+        pincodeContainer.innerHTML = serviceablePincodes.map(p => 
+            `<span style="background:#f5ece4;padding:0.3rem 0.8rem;border-radius:40px;border:1px solid #e8ddd5;font-size:0.8rem;display:inline-flex;align-items:center;gap:0.3rem;">${p} <span style="cursor:pointer;color:#c0392b;" onclick="removePincode('${p}')">&times;</span></span>`
+        ).join('');
+    }
+    
+    // Render courier partners
+    const courierContainer = document.getElementById('courierPartnerList');
+    if (courierContainer) {
+        courierContainer.innerHTML = courierPartners.map(c => 
+            `<span style="background:#f5ece4;padding:0.3rem 0.8rem;border-radius:40px;border:1px solid #e8ddd5;font-size:0.8rem;display:inline-flex;align-items:center;gap:0.3rem;">🚚 ${c} <span style="cursor:pointer;color:#c0392b;" onclick="removeCourierPartner('${c}')">&times;</span></span>`
+        ).join('');
+    }
+    
+    // Render delivery partners
+    const deliveryContainer = document.getElementById('deliveryPartnerListAdmin');
+    if (deliveryContainer) {
+        deliveryContainer.innerHTML = deliveryPartners.map(p => 
+            `<span style="background:#f5ece4;padding:0.3rem 0.8rem;border-radius:40px;border:1px solid #e8ddd5;font-size:0.8rem;display:inline-flex;align-items:center;gap:0.3rem;">👤 ${p} <span style="cursor:pointer;color:#c0392b;" onclick="removeDeliveryPartnerAdmin('${p}')">&times;</span></span>`
+        ).join('');
+    }
+}
+
+function addServiceablePincode() {
+    const pincode = document.getElementById('newPincode').value.trim();
+    if (!pincode || pincode.length < 5) { showToast('❌ Enter a valid pincode'); return; }
+    if (serviceablePincodes.includes(pincode)) { showToast('⚠️ Pincode already added'); return; }
+    serviceablePincodes.push(pincode);
+    document.getElementById('newPincode').value = '';
+    renderDeliverySettings();
+    showToast('✅ Pincode added');
+}
+
+function removePincode(pincode) {
+    serviceablePincodes = serviceablePincodes.filter(p => p !== pincode);
+    renderDeliverySettings();
+    showToast('🗑️ Pincode removed');
+}
+
+function addCourierPartner() {
+    const name = document.getElementById('newCourierPartner').value.trim();
+    if (!name) { showToast('❌ Enter courier name'); return; }
+    if (courierPartners.includes(name)) { showToast('⚠️ Courier already added'); return; }
+    courierPartners.push(name);
+    document.getElementById('newCourierPartner').value = '';
+    renderDeliverySettings();
+    showToast('✅ Courier partner added');
+}
+
+function removeCourierPartner(name) {
+    courierPartners = courierPartners.filter(c => c !== name);
+    renderDeliverySettings();
+    showToast('🗑️ Courier removed');
+}
+
+function addDeliveryPartner() {
+    const name = document.getElementById('newDeliveryPartner').value.trim();
+    if (!name) { showToast('❌ Enter partner name'); return; }
+    if (deliveryPartners.includes(name)) { showToast('⚠️ Partner already added'); return; }
+    deliveryPartners.push(name);
+    document.getElementById('newDeliveryPartner').value = '';
+    renderDeliverySettings();
+    renderDeliveryPartnersAdmin();
+    showToast('✅ Delivery partner added');
+}
+
+function removeDeliveryPartnerAdmin(name) {
+    deliveryPartners = deliveryPartners.filter(p => p !== name);
+    renderDeliverySettings();
+    renderDeliveryPartnersAdmin();
+    showToast('🗑️ Partner removed');
+}
+
+// ============================================
+// DELIVERY CREDENTIALS
+// ============================================
+function saveDeliveryCredentials() {
+    const username = document.getElementById('deliveryUsername').value.trim();
+    const password = document.getElementById('deliveryPassword').value.trim();
+    if (!username) { showToast('❌ Please enter username'); return; }
+    if (!password || password.length < 6) { showToast('❌ Password must be at least 6 characters'); return; }
+    deliveryCredentials.username = username;
+    deliveryCredentials.password = password;
+    showToast('✅ Delivery credentials saved!');
+}
+
+function sendDeliveryForgotOTP() {
+    const mobile = document.getElementById('deliveryForgotMobile').value.trim();
+    if (!mobile) { showToast('❌ Please enter mobile number'); return; }
+    const cleanMobile = mobile.replace(/[\s+]/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) { showToast('❌ Enter a valid 10-digit mobile number'); return; }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    deliveryOTPStorage.code = otp;
+    deliveryOTPStorage.expiry = Date.now() + 300000;
+    const message = `Kiwa Delivery: Your password reset OTP is: ${otp}. Valid for 5 minutes.`;
+    if (smsConfig.apiKey) { sendSMSViaAPI(cleanMobile, message); } else { showToast(`📱 DEMO: OTP ${otp} sent to ${cleanMobile}`); }
+    document.getElementById('deliveryForgotOTPSection').style.display = 'block';
+    document.getElementById('deliveryForgotOTPStatus').innerHTML = `<span style="color:#f39c12;">✅ OTP sent to ${cleanMobile}</span>`;
+    showToast('✅ OTP sent! Please check your SMS.');
+}
+
+function verifyDeliveryForgotOTP() {
+    const entered = document.getElementById('deliveryForgotOTPInput').value.trim();
+    if (!deliveryOTPStorage.code) { showToast('❌ OTP expired. Request a new one.'); return; }
+    if (Date.now() > deliveryOTPStorage.expiry) { showToast('❌ OTP expired'); deliveryOTPStorage.code = null; return; }
+    if (entered === deliveryOTPStorage.code) {
+        showToast('✅ OTP verified! You can now reset your password.');
+        document.getElementById('deliveryForgotOTPSection').style.display = 'none';
+        document.getElementById('deliveryPassword').focus();
+        document.getElementById('deliveryForgotOTPStatus').innerHTML = '<span style="color:#28a745;">✅ Verified! Set new password above.</span>';
+    } else {
+        showToast('❌ Invalid OTP');
+    }
+}
+
+// ============================================
+// SMS CONFIG
+// ============================================
+function loadSMSConfig() {
+    document.getElementById('smsProvider').value = smsConfig.provider || 'textlocal';
+    document.getElementById('smsApiKey').value = smsConfig.apiKey || '';
+    document.getElementById('smsSenderId').value = smsConfig.senderId || 'KIWAOTP';
+    document.getElementById('smsTemplate').value = smsConfig.template || 'Your Kiwa OTP is: {OTP}. Valid for 5 minutes.';
+}
+
+function saveSMSConfig() {
+    smsConfig.provider = document.getElementById('smsProvider').value;
+    smsConfig.apiKey = document.getElementById('smsApiKey').value.trim();
+    smsConfig.senderId = document.getElementById('smsSenderId').value.trim();
+    smsConfig.template = document.getElementById('smsTemplate').value.trim();
+    showToast('✅ SMS configuration saved!');
+}
+
+function testSMS() {
+    const testNumber = prompt('Enter a test mobile number (10 digits):');
+    if (!testNumber) return;
+    const cleanNumber = testNumber.replace(/[\s+]/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanNumber)) { showToast('❌ Invalid mobile number'); return; }
+    const testMessage = 'Kiwa Test: Your SMS gateway is working correctly!';
+    sendSMSViaAPI(cleanNumber, testMessage);
+    showToast('📱 Test SMS sent! Check your phone.');
+}
+
+// ============================================
+// ADMIN SETTINGS
+// ============================================
+function loadSettings() {
+    document.getElementById('adminUsername').value = adminCredentials.username;
+    document.getElementById('websiteDescription').value = websiteSettings.description;
+    document.getElementById('contactEmail').value = websiteSettings.contactEmail;
+    document.getElementById('contactPhone').value = websiteSettings.contactPhone;
+    document.getElementById('socialInstagram').value = websiteSettings.social.instagram || '';
+    document.getElementById('socialFacebook').value = websiteSettings.social.facebook || '';
+    document.getElementById('socialTwitter').value = websiteSettings.social.twitter || '';
+    document.getElementById('socialYoutube').value = websiteSettings.social.youtube || '';
+    document.getElementById('toggleSocialFooter').checked = websiteSettings.toggles.socialFooter;
+    document.getElementById('toggleContactFooter').checked = websiteSettings.toggles.contactFooter;
+    document.getElementById('toggleDescription').checked = websiteSettings.toggles.showDescription;
+    document.getElementById('toggleGuestCheckout').checked = websiteSettings.toggles.guestCheckout;
+    updateFooter();
+}
+
+function updateUsername() {
+    const username = document.getElementById('adminUsername').value.trim();
+    if (!username) { showToast('❌ Please enter username'); return; }
+    adminCredentials.username = username;
+    showToast('✅ Username updated!');
+}
+
+function updatePassword() {
+    const password = document.getElementById('adminNewPassword').value.trim();
+    if (!password || password.length < 6) { showToast('❌ Password must be at least 6 characters'); return; }
+    adminCredentials.password = password;
+    document.getElementById('adminNewPassword').value = '';
+    showToast('✅ Password updated!');
+}
+
+function saveSocialLinks() {
+    websiteSettings.social.instagram = document.getElementById('socialInstagram').value.trim();
+    websiteSettings.social.facebook = document.getElementById('socialFacebook').value.trim();
+    websiteSettings.social.twitter = document.getElementById('socialTwitter').value.trim();
+    websiteSettings.social.youtube = document.getElementById('socialYoutube').value.trim();
+    showToast('✅ Social links saved!');
+    updateFooter();
+}
+
+function saveWebsiteInfo() {
+    websiteSettings.description = document.getElementById('websiteDescription').value.trim();
+    websiteSettings.contactEmail = document.getElementById('contactEmail').value.trim();
+    websiteSettings.contactPhone = document.getElementById('contactPhone').value.trim();
+    showToast('✅ Website info saved!');
+    updateFooter();
+}
+
+function saveToggles() {
+    websiteSettings.toggles.socialFooter = document.getElementById('toggleSocialFooter').checked;
+    websiteSettings.toggles.contactFooter = document.getElementById('toggleContactFooter').checked;
+    websiteSettings.toggles.showDescription = document.getElementById('toggleDescription').checked;
+    websiteSettings.toggles.guestCheckout = document.getElementById('toggleGuestCheckout').checked;
+    const guestBtn = document.getElementById('guestCheckoutBtn');
+    if (guestBtn) guestBtn.style.display = websiteSettings.toggles.guestCheckout ? 'inline-block' : 'none';
+    showToast('✅ Toggles saved!');
+    updateFooter();
+}
+
+function sendRealOTP() {
+    const mobile = document.getElementById('forgotEmail').value.trim();
+    if (!mobile) { showToast('❌ Please enter mobile number'); return; }
+    const cleanMobile = mobile.replace(/[\s+]/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanMobile)) { showToast('❌ Enter a valid 10-digit mobile number'); return; }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStorage.code = otp;
+    otpStorage.countdown = 60;
+    otpStorage.mobile = cleanMobile;
+    sendSMSViaAPI(cleanMobile, `Your Kiwa Admin OTP is: ${otp}. Valid for 5 minutes.`);
+    document.getElementById('otpSection').style.display = 'flex';
+    document.getElementById('otpInput').value = '';
+    updateOTPTimer();
+}
+
+function updateOTPTimer() {
+    const timerEl = document.getElementById('otpTimer');
+    if (otpStorage.countdown <= 0) { timerEl.textContent = 'Expired'; otpStorage.code = null; return; }
+    timerEl.textContent = otpStorage.countdown + 's';
+    otpStorage.countdown--;
+    setTimeout(updateOTPTimer, 1000);
+}
+
+function verifyRealOTP() {
+    const entered = document.getElementById('otpInput').value.trim();
+    if (!otpStorage.code) { showToast('❌ OTP expired. Request a new one.'); return; }
+    if (entered === otpStorage.code) {
+        showToast('✅ OTP verified successfully!');
+        document.getElementById('adminNewPassword').focus();
+        resetOTP();
+        showToast('🔓 You can now set a new password above.');
+    } else {
+        showToast('❌ Invalid OTP. Please try again.');
+    }
+}
+
+function resetOTP() {
+    document.getElementById('otpSection').style.display = 'none';
+    otpStorage.code = null;
+    otpStorage.mobile = null;
+    document.getElementById('otpInput').value = '';
+}
+
+// ============================================
+// MARKETING
+// ============================================
+function renderCoupons() {
+    const container = document.getElementById('couponList');
+    if (!container) return;
+    if (coupons.length === 0) { container.innerHTML = '<p style="color:#6b4f3e;">No coupons created</p>'; return; }
+    container.innerHTML = coupons.map(c => `
+        <div style="display:flex;align-items:center;gap:0.5rem;background:#faf6f1;padding:0.5rem 1rem;border-radius:40px;border:1px solid #f0e8e0;">
+            <span class="badge success">ACTIVE</span> ${c}
+            <button class="btn-sm" style="font-size:0.6rem;background:#fcd9d9;padding:0.2rem 0.6rem;border:none;border-radius:40px;cursor:pointer;" onclick="deleteCoupon('${c}')">×</button>
+        </div>
+    `).join('');
+}
+
+function createCoupon() {
+    const code = document.getElementById('couponCode').value.trim();
+    if (!code) { showToast('❌ Enter coupon code'); return; }
+    if (coupons.includes(code)) { showToast('❌ Coupon already exists'); return; }
+    coupons.push(code);
+    showToast(`✅ Coupon "${code}" created!`);
+    renderCoupons();
+}
+
+function deleteCoupon(code) {
+    coupons = coupons.filter(c => c !== code);
+    renderCoupons();
+    showToast('🗑️ Coupon deleted');
+}
+
+// ============================================
+// FOOTER UPDATE
+// ============================================
+function updateFooter() {
+    const descEl = document.getElementById('footerDescription');
+    const socialEl = document.getElementById('footerSocialLinks');
+    const contactEl = document.getElementById('footerContact');
+    if (websiteSettings.toggles.showDescription && websiteSettings.description) {
+        descEl.textContent = websiteSettings.description;
+        descEl.style.display = 'block';
+    } else { descEl.style.display = 'none'; }
+    if (websiteSettings.toggles.socialFooter) {
+        const socials = [
+            { id: 'instagram', icon: 'fab fa-instagram', color: '#E4405F', label: 'Instagram' },
+            { id: 'facebook', icon: 'fab fa-facebook', color: '#1877F2', label: 'Facebook' },
+            { id: 'twitter', icon: 'fab fa-twitter', color: '#1DA1F2', label: 'Twitter' },
+            { id: 'youtube', icon: 'fab fa-youtube', color: '#FF0000', label: 'YouTube' },
+            { id: 'snapchat', icon: 'fab fa-snapchat', color: '#FFFC00', label: 'Snapchat' }
+        ];
+        let html = '';
+        socials.forEach(s => {
+            const url = websiteSettings.social[s.id];
+            if (url) html += `<a href="${url}" target="_blank" class="social-link" style="color:${s.color};"><i class="${s.icon}"></i> ${s.label}</a>`;
+        });
+        if (html) { socialEl.innerHTML = html; socialEl.style.display = 'flex'; } else { socialEl.style.display = 'none'; }
+    } else { socialEl.style.display = 'none'; }
+    if (websiteSettings.toggles.contactFooter) {
+        let contactHtml = '';
+        if (websiteSettings.contactEmail) contactHtml += `<span><i class="fas fa-envelope"></i> ${websiteSettings.contactEmail}</span>`;
+        if (websiteSettings.contactPhone) { if (contactHtml) contactHtml += ' · '; contactHtml += `<span><i class="fas fa-phone"></i> ${websiteSettings.contactPhone}</span>`; }
+        if (contactHtml) { contactEl.innerHTML = contactHtml; contactEl.style.display = 'block'; } else { contactEl.style.display = 'none'; }
+    } else { contactEl.style.display = 'none'; }
+}
+
+// ============================================
+// MODAL CLOSE
+// ============================================
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+});
+
+// ============================================
+// INIT
+// ============================================
+setPanel('customer');
+updateCartUI();
+renderDeliveryPartnersAdmin();
+renderCoupons();
+renderDeliveryLogs();
+renderDeliveryOrders();
+updateDeliveryStats();
+updateFooter();
+loadSMSConfig();
+renderAssignedOrders();
+
+document.getElementById('guestCheckoutBtn').style.display = websiteSettings.toggles.guestCheckout ? 'inline-block' : 'none';
+</script>
+</body>
+</html>
